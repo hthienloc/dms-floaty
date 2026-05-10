@@ -31,4 +31,5 @@ A minimalist reference image plugin for DankMaterialShell. Float images on top o
    dms ipc plugins reload floaty
    ```
 
-Developed by **Loc Huynh**.
+## Credits
+- Inspired by [Kasasa](https://flathub.org/en/apps/io.github.kelvinnovais.Kasasa).

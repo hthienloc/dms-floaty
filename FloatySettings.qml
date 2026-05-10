@@ -15,64 +15,78 @@ PluginSettings {
         color: Theme.surfaceText
     }
 
-    StyledText {
-        width: parent.width
-        text: "Configure the default behavior for floating images."
-        font.pixelSize: Theme.fontSizeSmall
-        color: Theme.surfaceVariantText
-        wrapMode: Text.WordWrap
-    }
-
+    // Appearance Card
     StyledRect {
         width: parent.width
-        height: 1
-        color: Theme.surfaceVariant
+        height: appearanceColumn.implicitHeight + Theme.spacingL * 2
+        radius: Theme.cornerRadius
+        color: Theme.surfaceContainerHigh
+
+        Column {
+            id: appearanceColumn
+            anchors.fill: parent
+            anchors.margins: Theme.spacingL
+            spacing: Theme.spacingM
+
+            StyledText {
+                text: "Appearance"
+                font.pixelSize: Theme.fontSizeMedium
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+            }
+
+            SliderSetting {
+                settingKey: "initialScale"
+                label: "Initial Image Size"
+                description: "The width (px) of the image when first opened."
+                minimumValue: 100
+                maximumValue: 800
+                stepSize: 50
+                unit: "px"
+                defaultValue: 400
+            }
+        }
     }
 
-    StyledText {
-        text: "Appearance"
-        font.pixelSize: Theme.fontSizeMedium
-        font.weight: Font.DemiBold
-        color: Theme.surfaceText
-    }
-
-    SliderSetting {
-        settingKey: "initialScale"
-        label: "Initial Image Size"
-        minimumValue: 100
-        maximumValue: 800
-        stepSize: 50
-        unit: "px"
-    }
-
+    // Auto-Minimize Card
     StyledRect {
         width: parent.width
-        height: 1
-        color: Theme.surfaceVariant
-    }
+        height: behaviorColumn.implicitHeight + Theme.spacingL * 2
+        radius: Theme.cornerRadius
+        color: Theme.surfaceContainerHigh
 
-    StyledText {
-        text: "Auto Minimize"
-        font.pixelSize: Theme.fontSizeMedium
-        font.weight: Font.DemiBold
-        color: Theme.surfaceText
-    }
+        Column {
+            id: behaviorColumn
+            anchors.fill: parent
+            anchors.margins: Theme.spacingL
+            spacing: Theme.spacingM
 
-    SwitchSetting {
-        id: autoMinimizeSwitch
-        settingKey: "autoMinimize"
-        label: "Minimize when not hovered"
-        description: "Shrink to an icon after a delay when mouse leaves the image"
-    }
+            StyledText {
+                text: "Behavior"
+                font.pixelSize: Theme.fontSizeMedium
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+            }
 
-    SliderSetting {
-        settingKey: "minimizeDelay"
-        label: "Minimize Delay"
-        minimumValue: 1000
-        maximumValue: 10000
-        stepSize: 500
-        unit: "ms"
-        // Use a more robust check for the enabled state
-        enabled: autoMinimizeSwitch.checked
+            ToggleSetting {
+                id: autoMinimizeToggle
+                settingKey: "autoMinimize"
+                label: "Auto-Minimize"
+                description: "Shrink to an icon when the mouse leaves the image."
+                defaultValue: false
+            }
+
+            SliderSetting {
+                settingKey: "minimizeDelay"
+                label: "Minimize Delay"
+                description: "Wait time before shrinking."
+                minimumValue: 1000
+                maximumValue: 10000
+                stepSize: 500
+                unit: "ms"
+                defaultValue: 3000
+                enabled: autoMinimizeToggle.checked
+            }
+        }
     }
 }

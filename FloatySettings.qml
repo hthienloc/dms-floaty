@@ -59,6 +59,7 @@ PluginSettings {
     }
 
     SwitchSetting {
+        id: autoMinimizeSwitch
         settingKey: "autoMinimize"
         label: "Minimize when not hovered"
         description: "Shrink to an icon after a delay when mouse leaves the image"
@@ -71,6 +72,7 @@ PluginSettings {
         maximumValue: 10000
         stepSize: 500
         unit: "ms"
-        enabled: pluginData.autoMinimize ?? false
+        // Use a more robust check for the enabled state
+        enabled: autoMinimizeSwitch.checked
     }
 }

@@ -179,7 +179,8 @@ PluginComponent {
                 imageSource: source,
                 xPos: 300 + (Math.random() * 200),
                 yPos: 300 + (Math.random() * 200),
-                initialWidth: initialWidth
+                initialWidth: initialWidth,
+                pluginData: root.pluginData
             });
             
             if (win !== null) {

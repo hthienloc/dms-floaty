@@ -38,12 +38,39 @@ PluginSettings {
 
     SliderSetting {
         settingKey: "initialScale"
-        label: "Default Image Size"
-        description: "The initial width for newly floated images (pixels)"
-        defaultValue: 400
-        minimum: 100
-        maximum: 1000
+        label: "Initial Image Size"
+        minimumValue: 100
+        maximumValue: 800
+        stepSize: 50
         unit: "px"
-        rightIcon: "aspect_ratio"
+    }
+
+    StyledRect {
+        width: parent.width
+        height: 1
+        color: Theme.surfaceVariant
+    }
+
+    StyledText {
+        text: "Auto Minimize"
+        font.pixelSize: Theme.fontSizeMedium
+        font.weight: Font.DemiBold
+        color: Theme.surfaceText
+    }
+
+    SwitchSetting {
+        settingKey: "autoMinimize"
+        label: "Minimize when not hovered"
+        description: "Shrink to an icon after a delay when mouse leaves the image"
+    }
+
+    SliderSetting {
+        settingKey: "minimizeDelay"
+        label: "Minimize Delay"
+        minimumValue: 1000
+        maximumValue: 10000
+        stepSize: 500
+        unit: "ms"
+        enabled: pluginData.autoMinimize ?? false
     }
 }

@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
 import qs.Common
@@ -17,7 +16,16 @@ PanelWindow {
     property bool isPinned: true 
     property int initialWidth: 400
     
-    // Direct position control
+    // Settings from plugin
+    property var pluginData: ({}) // Should be passed/synced, but for safety:
+    readonly property bool autoMinimize: pluginData.autoMinimize ?? false
+    readonly property int minimizeDelay: pluginData.minimizeDelay ?? 3000
+    
+    property bool isMinimized: false
+    property real targetWidth: initialWidth
+    property real targetHeight: 300 // Initial placeholder
+
+    // Position control
     property int xPos: 400
     property int yPos: 400
 
@@ -33,126 +41,111 @@ PanelWindow {
         top: window.yPos
     }
 
-    width: 300
-    height: 300
-    color: "transparent"
+    width: isMinimized ? 48 : targetWidth
+    height: isMinimized ? 48 : targetHeight
 
-    // The Drag Engine
+    // Smooth transitions for size
+    Behavior on width { NumberAnimation { duration: 300; easing.type: Easing.InOutQuad } }
+    Behavior on height { NumberAnimation { duration: 300; easing.type: Easing.InOutQuad } }
+
+    Timer {
+        id: minimizeTimer
+        interval: window.minimizeDelay
+        repeat: false
+        onTriggered: window.isMinimized = true
+    }
+
+    // The Drag Engine (Helper item for Quickshell position sync)
     Item {
         id: dragTarget
         x: window.xPos
         y: window.yPos
-        
-        // Update the window position only when actively dragged
-        onXChanged: {
-            if (dragArea.drag.active) window.xPos = x
-        }
-        onYChanged: {
-            if (dragArea.drag.active) window.yPos = y
-        }
+        onXChanged: { if (dragArea.drag.active) window.xPos = x }
+        onYChanged: { if (dragArea.drag.active) window.yPos = y }
     }
 
-    // Visual Content
     StyledRect {
         id: container
         anchors.fill: parent
-        anchors.margins: 5
-        radius: Theme.cornerRadius
-        color: Theme.surfaceContainer
-        border.color: Theme.outlineVariant
-        border.width: 1
-        
-        layer.enabled: true
-        layer.effect: MultiEffect {
-            maskEnabled: true
-            maskSource: ShaderEffectSource {
-                sourceItem: Rectangle {
-                    width: container.width
-                    height: container.height
-                    radius: container.radius
-                }
-            }
-        }
+        anchors.margins: window.isMinimized ? 0 : 5
+        radius: window.isMinimized ? height / 2 : Theme.cornerRadius
+        color: window.isMinimized ? Theme.primary : Theme.surfaceContainer
+        border.color: window.isMinimized ? "transparent" : Theme.outlineVariant
+        border.width: window.isMinimized ? 0 : 1
+        clip: true
 
+        // Image View
         Image {
             id: img
+            source: window.imageSource
             anchors.fill: parent
             anchors.margins: 2
-            source: window.imageSource
             fillMode: Image.PreserveAspectFit
             asynchronous: true
-        
+            opacity: window.isMinimized ? 0 : 1
+            visible: opacity > 0
+            
+            Behavior on opacity { NumberAnimation { duration: 200 } }
+
             onStatusChanged: {
                 if (status === Image.Ready) {
-                    let ratio = img.implicitWidth / img.implicitHeight;
-                    let targetW, targetH;
-                    
-                    // Use initialWidth from settings
-                    targetW = Math.max(100, window.initialWidth);
-                    targetH = targetW / ratio;
-                    
-                    window.width = targetW;
-                    window.height = targetH;
-                    
-                    // Initial sync
-                    dragTarget.x = window.xPos;
-                    dragTarget.y = window.yPos;
+                    let ratio = implicitHeight / implicitWidth;
+                    window.targetHeight = window.targetWidth * ratio;
+                }
+            }
+        }
+
+        // Minimized Icon
+        DankIcon {
+            name: "cloud"
+            anchors.centerIn: parent
+            size: Theme.iconSizeSmall
+            color: Theme.surface
+            opacity: window.isMinimized ? 1 : 0
+            visible: opacity > 0
+            Behavior on opacity { NumberAnimation { duration: 200 } }
+        }
+
+        // Interactions
+        MouseArea {
+            id: dragArea
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.SizeAllCursor
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            
+            drag.target: dragTarget
+            drag.axis: Drag.XAndYAxis
+            drag.threshold: 0
+
+            onEntered: {
+                minimizeTimer.stop();
+                window.isMinimized = false;
+            }
+            
+            onExited: {
+                if (window.autoMinimize && !drag.active) {
+                    minimizeTimer.restart();
                 }
             }
 
-            StyledText {
-                anchors.centerIn: parent
-                text: "Loading..."
-                visible: img.status === Image.Loading
-                color: Theme.surfaceVariantText
+            onPressed: (mouse) => {
+                if (mouse.button === Qt.RightButton) {
+                    window.closing();
+                    window.destroy();
+                }
             }
-        }
-    }
 
-    // Interaction Area - MOVED TO BOTTOM TO BE ON TOP
-    MouseArea {
-        id: dragArea
-        anchors.fill: parent
-        cursorShape: Qt.SizeAllCursor
-        acceptedButtons: Qt.AllButtons
-        hoverEnabled: true
-        
-        drag.target: dragTarget
-        drag.axis: Drag.XAndYAxis
-        drag.threshold: 0
-        
-        onPressed: (mouse) => {
-            if (mouse.button === Qt.RightButton) {
-                window.closing()
-                window.destroy()
-            }
-        }
-
-        onWheel: (wheel) => {
-            let delta = wheel.angleDelta.y;
-            if (delta === 0) return;
-            
-            let zoomFactor = delta > 0 ? 1.1 : 0.9;
-            let oldW = window.width;
-            let oldH = window.height;
-            let newW = oldW * zoomFactor;
-            let newH = oldH * zoomFactor;
-            
-            if (newW >= 100 && newW <= 2000) {
-                // Adjust position to simulate center zoom
-                let dx = (newW - oldW) / 2;
-                let dy = (newH - oldH) / 2;
-                window.xPos -= dx;
-                window.yPos -= dy;
+            onWheel: (wheel) => {
+                if (window.isMinimized) return;
                 
-                // Sync the dragTarget so it doesn't jump on next drag
-                dragTarget.x = window.xPos;
-                dragTarget.y = window.yPos;
+                let scaleFactor = wheel.angleDelta.y > 0 ? 1.1 : 0.9;
+                let newWidth = Math.max(100, Math.min(2000, window.targetWidth * scaleFactor));
+                let ratio = img.implicitHeight / img.implicitWidth;
                 
-                window.width = newW;
-                window.height = newH;
+                window.targetWidth = newWidth;
+                window.targetHeight = newWidth * ratio;
             }
-            wheel.accepted = true;
         }
     }
 }

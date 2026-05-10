@@ -1,7 +1,7 @@
 {
     "id": "floaty",
     "name": "Floaty",
-    "description": "Float images from your clipboard on top of all windows for easy reference.",
+    "description": "A minimalist reference image tool to float clipboard or local images on top of all windows. Features auto-minimize, dynamic resizing, and snappy animations.",
     "version": "1.0.0",
     "author": "Loc Huynh",
     "icon": "cloud",

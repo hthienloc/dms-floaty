@@ -28,7 +28,7 @@ A minimalist reference image plugin for DankMaterialShell. Float images on top o
 ## Installation
 1. Clone this repository into `~/.config/DankMaterialShell/plugins/`:
    ```bash
-   git clone https://github.com/loccun/dms-floaty floaty
+   git clone https://github.com/hthienloc/dms-floaty floaty
    ```
 2. Reload DMS or use the IPC command:
    ```bash

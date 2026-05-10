@@ -41,7 +41,7 @@ PanelWindow {
         top: window.yPos
     }
 
-    // Dynamic width/height handled by states
+    // Dynamic width/height handled by states in container
     width: targetWidth
     height: targetHeight
 
@@ -142,40 +142,40 @@ PanelWindow {
                 window.targetHeight = newWidth * ratio;
             }
         }
+
+        // Move states and transitions here
+        states: [
+            State {
+                name: "minimized"
+                when: window.isMinimized
+                PropertyChanges { target: window; width: 56; height: 56 }
+                PropertyChanges { target: container; radius: 28; color: Theme.primary; border.width: 0 }
+                PropertyChanges { target: img; opacity: 0 }
+                PropertyChanges { target: cloudIcon; opacity: 1 }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: ""; to: "minimized"
+                ParallelAnimation {
+                    NumberAnimation { target: window; properties: "width,height"; duration: 400; easing.type: Easing.InOutBack }
+                    NumberAnimation { target: container; properties: "radius"; duration: 400; easing.type: Easing.InOutQuad }
+                    ColorAnimation { target: container; duration: 400 }
+                    NumberAnimation { target: img; property: "opacity"; duration: 200 }
+                    NumberAnimation { target: cloudIcon; property: "opacity"; duration: 300; easing.type: Easing.InQuad }
+                }
+            },
+            Transition {
+                from: "minimized"; to: ""
+                ParallelAnimation {
+                    NumberAnimation { target: window; properties: "width,height"; duration: 400; easing.type: Easing.OutBack }
+                    NumberAnimation { target: container; properties: "radius"; duration: 400; easing.type: Easing.InOutQuad }
+                    ColorAnimation { target: container; duration: 400 }
+                    NumberAnimation { target: img; property: "opacity"; duration: 300; easing.type: Easing.InQuad }
+                    NumberAnimation { target: cloudIcon; property: "opacity"; duration: 150 }
+                }
+            }
+        ]
     }
-
-    // State Management for smooth transitions
-    states: [
-        State {
-            name: "minimized"
-            when: window.isMinimized
-            PropertyChanges { target: window; width: 56; height: 56 }
-            PropertyChanges { target: container; radius: 28; color: Theme.primary; border.width: 0 }
-            PropertyChanges { target: img; opacity: 0 }
-            PropertyChanges { target: cloudIcon; opacity: 1 }
-        }
-    ]
-
-    transitions: [
-        Transition {
-            from: ""; to: "minimized"
-            ParallelAnimation {
-                NumberAnimation { target: window; properties: "width,height"; duration: 400; easing.type: Easing.InOutBack }
-                NumberAnimation { target: container; properties: "radius"; duration: 400; easing.type: Easing.InOutQuad }
-                ColorAnimation { target: container; duration: 400 }
-                NumberAnimation { target: img; property: "opacity"; duration: 200 }
-                NumberAnimation { target: cloudIcon; property: "opacity"; duration: 300; easing.type: Easing.InQuad }
-            }
-        },
-        Transition {
-            from: "minimized"; to: ""
-            ParallelAnimation {
-                NumberAnimation { target: window; properties: "width,height"; duration: 400; easing.type: Easing.OutBack }
-                NumberAnimation { target: container; properties: "radius"; duration: 400; easing.type: Easing.InOutQuad }
-                ColorAnimation { target: container; duration: 400 }
-                NumberAnimation { target: img; property: "opacity"; duration: 300; easing.type: Easing.InQuad }
-                NumberAnimation { target: cloudIcon; property: "opacity"; duration: 150 }
-            }
-        }
-    ]
 }

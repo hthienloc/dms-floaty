@@ -15,11 +15,15 @@ A minimalist reference image plugin for DankMaterialShell. Float images on top o
 
 ## Controls
 - **Left Click + Drag**: Move the floating image.
-- **Scroll Wheel**: Resize (Zoom) the image.
+- **Scroll Wheel / Pinch Gesture**: Resize (Zoom) the image.
 - **Middle Click**: Toggle minimized state (manual shrink/expand).
 - **Right Click Image**: Close the image window.
 - **Right Click Bar Icon**: Instant paste from clipboard.
 - **Left Click Bar Icon**: Open control menu (Popout).
+
+## Notes
+> [!WARNING]
+> **Touchpad Scaling**: Touchpad gestures (pinch and scroll) might vary in sensitivity across different Wayland compositors. Using a mouse scroll wheel provides the most consistent precision.
 
 ## Requirements
 - `wl-paste` (Wayland) or `xclip` (X11) for clipboard support.

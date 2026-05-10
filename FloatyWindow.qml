@@ -117,6 +117,22 @@ PanelWindow {
             visible: opacity > 0
         }
 
+        // Touchpad Pinch Support
+        PinchHandler {
+            id: pinchHandler
+            target: null
+            property real startWidth: 400
+            onActiveChanged: {
+                if (active) startWidth = window.targetWidth;
+            }
+            onScaleChanged: {
+                let newWidth = Math.max(100, Math.min(2000, startWidth * scale));
+                let ratio = img.implicitHeight / img.implicitWidth;
+                window.targetWidth = newWidth;
+                window.targetHeight = newWidth * ratio;
+            }
+        }
+
         // Interactions
         MouseArea {
             id: dragArea
@@ -152,7 +168,10 @@ PanelWindow {
             onWheel: (wheel) => {
                 if (window.isMinimized) return;
                 
-                let scaleFactor = wheel.angleDelta.y > 0 ? 1.1 : 0.9;
+                // Use a more continuous scaling factor for touchpad precision
+                // 120 is the standard mouse wheel delta. 
+                // We use pow(1.1, delta/120) to make it smooth and match the 1.1/0.9 feeling for mice.
+                let scaleFactor = Math.pow(1.1, wheel.angleDelta.y / 120.0);
                 let newWidth = Math.max(100, Math.min(2000, window.targetWidth * scaleFactor));
                 let ratio = img.implicitHeight / img.implicitWidth;
                 

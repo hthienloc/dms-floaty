@@ -9,6 +9,7 @@ import qs.Widgets
 
 PanelWindow {
     id: window
+    color: "transparent"
     
     signal closing()
     
@@ -52,6 +53,12 @@ PanelWindow {
         onTriggered: window.isMinimized = true
     }
 
+    Component.onCompleted: {
+        if (window.autoMinimize) {
+            minimizeTimer.start();
+        }
+    }
+
     // The Drag Engine
     Item {
         id: dragTarget
@@ -69,6 +76,7 @@ PanelWindow {
         border.color: Theme.outlineVariant
         border.width: 1
         clip: true
+        antialiasing: true
 
         // Image View - Fixed size inside container to prevent shrinking effect
         Image {
@@ -107,7 +115,7 @@ PanelWindow {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.SizeAllCursor
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
             
             drag.target: dragTarget
             drag.axis: Drag.XAndYAxis
@@ -128,6 +136,8 @@ PanelWindow {
                 if (mouse.button === Qt.RightButton) {
                     window.closing();
                     window.destroy();
+                } else if (mouse.button === Qt.MiddleButton) {
+                    window.isMinimized = !window.isMinimized;
                 }
             }
 
@@ -159,21 +169,57 @@ PanelWindow {
             Transition {
                 from: ""; to: "minimized"
                 ParallelAnimation {
-                    NumberAnimation { target: window; properties: "width,height"; duration: 400; easing.type: Easing.InOutBack }
-                    NumberAnimation { target: container; properties: "radius"; duration: 400; easing.type: Easing.InOutQuad }
-                    ColorAnimation { target: container; duration: 400 }
-                    NumberAnimation { target: img; property: "opacity"; duration: 200 }
-                    NumberAnimation { target: cloudIcon; property: "opacity"; duration: 300; easing.type: Easing.InQuad }
+                    NumberAnimation { 
+                        target: window; properties: "width,height"
+                        duration: Theme.variantDuration(100, false)
+                        easing.type: Easing.OutCubic 
+                    }
+                    NumberAnimation { 
+                        target: container; properties: "radius"
+                        duration: Theme.variantDuration(100, false)
+                        easing.type: Easing.InOutQuad 
+                    }
+                    ColorAnimation { 
+                        target: container
+                        duration: Theme.variantDuration(100, false) 
+                    }
+                    NumberAnimation { 
+                        target: img; property: "opacity"
+                        duration: Theme.variantDuration(40, false) 
+                    }
+                    NumberAnimation { 
+                        target: cloudIcon; property: "opacity"
+                        duration: Theme.variantDuration(40, false)
+                        easing.type: Easing.InQuad 
+                    }
                 }
             },
             Transition {
                 from: "minimized"; to: ""
                 ParallelAnimation {
-                    NumberAnimation { target: window; properties: "width,height"; duration: 400; easing.type: Easing.OutBack }
-                    NumberAnimation { target: container; properties: "radius"; duration: 400; easing.type: Easing.InOutQuad }
-                    ColorAnimation { target: container; duration: 400 }
-                    NumberAnimation { target: img; property: "opacity"; duration: 300; easing.type: Easing.InQuad }
-                    NumberAnimation { target: cloudIcon; property: "opacity"; duration: 150 }
+                    NumberAnimation { 
+                        target: window; properties: "width,height"
+                        duration: Theme.variantDuration(Theme.expressiveDurations.normal, true)
+                        easing.type: Easing.Bezier; easing.bezierCurve: Theme.variantEnterCurve 
+                    }
+                    NumberAnimation { 
+                        target: container; properties: "radius"
+                        duration: Theme.variantDuration(Theme.expressiveDurations.normal, true)
+                        easing.type: Easing.InOutQuad 
+                    }
+                    ColorAnimation { 
+                        target: container
+                        duration: Theme.variantDuration(Theme.expressiveDurations.normal, true) 
+                    }
+                    NumberAnimation { 
+                        target: img; property: "opacity"
+                        duration: Theme.variantDuration(Theme.expressiveDurations.normal, true)
+                        easing.type: Easing.InQuad 
+                    }
+                    NumberAnimation { 
+                        target: cloudIcon; property: "opacity"
+                        duration: Theme.variantDuration(Theme.expressiveDurations.fast, true) 
+                    }
                 }
             }
         ]

@@ -124,6 +124,11 @@ PluginComponent {
                             }
                             Row {
                                 spacing: Theme.spacingS
+                                DankIcon { name: "contract"; size: 14; color: Theme.surfaceVariantText }
+                                StyledText { text: "Middle Click: Toggle Minimize"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                            }
+                            Row {
+                                spacing: Theme.spacingS
                                 DankIcon { name: "bolt"; size: 14; color: Theme.primary }
                                 StyledText { text: "Right Click Icon: Fast Paste"; color: Theme.primary; font.pixelSize: Theme.fontSizeSmall }
                             }

@@ -71,7 +71,7 @@ PluginSettings {
                 id: autoMinimizeToggle
                 settingKey: "autoMinimize"
                 label: "Auto-Minimize"
-                description: "Shrink to an icon when the mouse leaves the image."
+                description: "Shrink to an icon when idle."
                 defaultValue: false
             }
 

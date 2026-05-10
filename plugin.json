@@ -1,0 +1,18 @@
+{
+    "id": "floaty",
+    "name": "Floaty",
+    "description": "Float images from your clipboard on top of all windows for easy reference.",
+    "version": "1.0.0",
+    "author": "Loc Huynh",
+    "icon": "cloud",
+    "type": "widget",
+    "capabilities": ["dankbar-widget"],
+    "component": "./FloatyPlugin.qml",
+    "settings": "./FloatySettings.qml",
+    "permissions": [
+        "settings_read",
+        "settings_write",
+        "process",
+        "clipboard_read"
+    ]
+}

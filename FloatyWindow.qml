@@ -57,6 +57,10 @@ PanelWindow {
         if (window.autoMinimize) {
             minimizeTimer.start();
         }
+
+        // Initial centering based on default size
+        window.xPos = (window.screen.width - window.width) / 2;
+        window.yPos = (window.screen.height - window.height) / 2;
     }
 
     // The Drag Engine
@@ -94,6 +98,10 @@ PanelWindow {
                 if (status === Image.Ready) {
                     let ratio = implicitHeight / implicitWidth;
                     window.targetHeight = window.targetWidth * ratio;
+
+                    // Final centering once dimensions are known
+                    window.xPos = (window.screen.width - window.targetWidth) / 2;
+                    window.yPos = (window.screen.height - window.targetHeight) / 2;
                 }
             }
         }

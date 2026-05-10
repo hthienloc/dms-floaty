@@ -39,9 +39,8 @@ PluginSettings {
                 settingKey: "initialScale"
                 label: "Initial Image Size"
                 description: "The width (px) of the image when first opened."
-                minimumValue: 100
-                maximumValue: 800
-                stepSize: 50
+                minimum: 100
+                maximum: 800
                 unit: "px"
                 defaultValue: 400
             }
@@ -79,10 +78,9 @@ PluginSettings {
             SliderSetting {
                 settingKey: "minimizeDelay"
                 label: "Minimize Delay"
-                description: "Wait time before shrinking."
-                minimumValue: 1000
-                maximumValue: 10000
-                stepSize: 500
+                description: "Wait time before shrinking (ms)."
+                minimum: 1000
+                maximum: 10000
                 unit: "ms"
                 defaultValue: 3000
                 enabled: autoMinimizeToggle.checked

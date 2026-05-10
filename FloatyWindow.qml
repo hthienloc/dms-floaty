@@ -17,13 +17,13 @@ PanelWindow {
     property int initialWidth: 400
     
     // Settings from plugin
-    property var pluginData: ({}) // Should be passed/synced, but for safety:
+    property var pluginData: ({})
     readonly property bool autoMinimize: pluginData.autoMinimize ?? false
     readonly property int minimizeDelay: pluginData.minimizeDelay ?? 3000
     
     property bool isMinimized: false
     property real targetWidth: initialWidth
-    property real targetHeight: 300 // Initial placeholder
+    property real targetHeight: 300
 
     // Position control
     property int xPos: 400
@@ -41,12 +41,9 @@ PanelWindow {
         top: window.yPos
     }
 
-    width: isMinimized ? 48 : targetWidth
-    height: isMinimized ? 48 : targetHeight
-
-    // Smooth transitions for size
-    Behavior on width { NumberAnimation { duration: 300; easing.type: Easing.InOutQuad } }
-    Behavior on height { NumberAnimation { duration: 300; easing.type: Easing.InOutQuad } }
+    // Dynamic width/height handled by states
+    width: targetWidth
+    height: targetHeight
 
     Timer {
         id: minimizeTimer
@@ -55,7 +52,7 @@ PanelWindow {
         onTriggered: window.isMinimized = true
     }
 
-    // The Drag Engine (Helper item for Quickshell position sync)
+    // The Drag Engine
     Item {
         id: dragTarget
         x: window.xPos
@@ -67,26 +64,24 @@ PanelWindow {
     StyledRect {
         id: container
         anchors.fill: parent
-        anchors.margins: window.isMinimized ? 0 : 5
-        radius: window.isMinimized ? height / 2 : Theme.cornerRadius
-        color: window.isMinimized ? Theme.primary : Theme.surfaceContainer
-        border.color: window.isMinimized ? "transparent" : Theme.outlineVariant
-        border.width: window.isMinimized ? 0 : 1
+        radius: Theme.cornerRadius
+        color: Theme.surfaceContainer
+        border.color: Theme.outlineVariant
+        border.width: 1
         clip: true
 
-        // Image View
+        // Image View - Fixed size inside container to prevent shrinking effect
         Image {
             id: img
             source: window.imageSource
-            anchors.fill: parent
-            anchors.margins: 2
+            width: window.targetWidth - 10
+            height: window.targetHeight - 10
+            anchors.centerIn: parent
             fillMode: Image.PreserveAspectFit
             asynchronous: true
-            opacity: window.isMinimized ? 0 : 1
+            opacity: 1
             visible: opacity > 0
             
-            Behavior on opacity { NumberAnimation { duration: 200 } }
-
             onStatusChanged: {
                 if (status === Image.Ready) {
                     let ratio = implicitHeight / implicitWidth;
@@ -97,13 +92,13 @@ PanelWindow {
 
         // Minimized Icon
         DankIcon {
+            id: cloudIcon
             name: "cloud"
             anchors.centerIn: parent
-            size: Theme.iconSizeSmall
-            color: Theme.surface
-            opacity: window.isMinimized ? 1 : 0
+            size: Theme.iconSize
+            color: Theme.onPrimary
+            opacity: 0
             visible: opacity > 0
-            Behavior on opacity { NumberAnimation { duration: 200 } }
         }
 
         // Interactions
@@ -148,4 +143,39 @@ PanelWindow {
             }
         }
     }
+
+    // State Management for smooth transitions
+    states: [
+        State {
+            name: "minimized"
+            when: window.isMinimized
+            PropertyChanges { target: window; width: 56; height: 56 }
+            PropertyChanges { target: container; radius: 28; color: Theme.primary; border.width: 0 }
+            PropertyChanges { target: img; opacity: 0 }
+            PropertyChanges { target: cloudIcon; opacity: 1 }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: ""; to: "minimized"
+            ParallelAnimation {
+                NumberAnimation { target: window; properties: "width,height"; duration: 400; easing.type: Easing.InOutBack }
+                NumberAnimation { target: container; properties: "radius"; duration: 400; easing.type: Easing.InOutQuad }
+                ColorAnimation { target: container; duration: 400 }
+                NumberAnimation { target: img; property: "opacity"; duration: 200 }
+                NumberAnimation { target: cloudIcon; property: "opacity"; duration: 300; easing.type: Easing.InQuad }
+            }
+        },
+        Transition {
+            from: "minimized"; to: ""
+            ParallelAnimation {
+                NumberAnimation { target: window; properties: "width,height"; duration: 400; easing.type: Easing.OutBack }
+                NumberAnimation { target: container; properties: "radius"; duration: 400; easing.type: Easing.InOutQuad }
+                ColorAnimation { target: container; duration: 400 }
+                NumberAnimation { target: img; property: "opacity"; duration: 300; easing.type: Easing.InQuad }
+                NumberAnimation { target: cloudIcon; property: "opacity"; duration: 150 }
+            }
+        }
+    ]
 }

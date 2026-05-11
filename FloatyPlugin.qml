@@ -136,16 +136,75 @@ PluginComponent {
                     }
                 }
 
-                DankButton {
-                    text: "Close All Windows"
+                Row {
                     width: parent.width
-                    iconName: "delete_sweep"
-                    backgroundColor: Theme.errorContainer
-                    textColor: Theme.error
+                    spacing: Theme.spacingS
                     visible: root.activeWindowCount > 0
-                    onClicked: {
-                        root.closeAllWindows();
-                        root.closePopout();
+
+                    DankButton {
+                        text: "Toggle All"
+                        width: (parent.width - Theme.spacingS) / 2
+                        iconName: "unfold_more"
+                        backgroundColor: Theme.secondaryContainer
+                        textColor: Theme.secondary
+                        onClicked: {
+                            root.toggleMinimizeAll();
+                            root.closePopout();
+                        }
+                    }
+
+                    DankButton {
+                        text: "Close All"
+                        width: (parent.width - Theme.spacingS) / 2
+                        iconName: "delete_sweep"
+                        backgroundColor: Theme.errorContainer
+                        textColor: Theme.error
+                        onClicked: {
+                            root.closeAllWindows();
+                            root.closePopout();
+                        }
+                    }
+                }
+
+                Column {
+                    width: parent.width
+                    spacing: Theme.spacingS
+                    
+                    StyledText {
+                        text: "Float from Link or Path"
+                        font.pixelSize: Theme.fontSizeSmall
+                        font.bold: true
+                        color: Theme.surfaceVariantText
+                    }
+                    
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingS
+                        
+                        DankTextField {
+                            id: urlInput
+                            width: parent.width - 44 - Theme.spacingS
+                            placeholderText: "https://... or /path/..."
+                            onAccepted: {
+                                if (text !== "") {
+                                    root.spawnWindow(text);
+                                    root.closePopout();
+                                }
+                            }
+                        }
+                        
+                        DankButton {
+                            width: 44
+                            iconName: "add"
+                            backgroundColor: Theme.primaryContainer
+                            textColor: Theme.primary
+                            onClicked: {
+                                if (urlInput.text !== "") {
+                                    root.spawnWindow(urlInput.text);
+                                    root.closePopout();
+                                }
+                            }
+                        }
                     }
                 }
 

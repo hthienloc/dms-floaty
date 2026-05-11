@@ -259,7 +259,7 @@ PluginSettings {
                                     textColor: Theme.primary
                                     anchors.verticalCenter: parent.verticalCenter
                                     onClicked: {
-                                        Proc.runCommand("wl-copy", ["--", modelData.text], function() {
+                                        Proc.runCommand("copy-ipc", ["wl-copy", "--", modelData.text], function() {
                                             ToastService.showInfo("Copied to clipboard");
                                         });
                                     }
@@ -306,7 +306,7 @@ PluginSettings {
                         textColor: Theme.primary
                         anchors.top: parent.top
                         onClicked: {
-                            Proc.runCommand("wl-copy", ["--", niriExample.text], function() {
+                            Proc.runCommand("copy-niri", ["wl-copy", "--", niriExample.text], function() {
                                 ToastService.showInfo("Copied to clipboard");
                             });
                         }

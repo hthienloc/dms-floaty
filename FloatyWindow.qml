@@ -79,29 +79,91 @@ PanelWindow {
         updatePosition();
     }
 
-    function yPosForPosition(pos, winHeight, screenHeight) {
+    Connections {
+        target: (typeof SettingsData !== "undefined") ? SettingsData : null
+        function onBarConfigsChanged() { updatePosition(); }
+        function onDockEnabledChanged() { updatePosition(); }
+        function onDockPositionChanged() { updatePosition(); }
+    }
+
+    function getWorkArea() {
+        let area = {
+            x: 0,
+            y: 0,
+            width: window.screen.width,
+            height: window.screen.height
+        };
+
+        if (typeof SettingsData === "undefined") return area;
+
+        // Handle Bars
+        if (SettingsData.barConfigs) {
+            SettingsData.barConfigs.forEach(cfg => {
+                if (!cfg.enabled || !cfg.visible) return;
+                
+                let onThisScreen = false;
+                if (!cfg.screenPreferences || cfg.screenPreferences.includes("all")) {
+                    onThisScreen = true;
+                } else {
+                    onThisScreen = cfg.screenPreferences.includes(window.screen.name);
+                }
+                
+                if (!onThisScreen) return;
+
+                let thickness = SettingsData.frameEnabled ? SettingsData.frameBarSize : ((cfg.thickness ?? 40) + (cfg.innerPadding ?? 4) * 2 + 8);
+                
+                // Position: 0=Top, 1=Bottom, 2=Left, 3=Right
+                switch (cfg.position) {
+                    case 0: area.y += thickness; area.height -= thickness; break;
+                    case 1: area.height -= thickness; break;
+                    case 2: area.x += thickness; area.width -= thickness; break;
+                    case 3: area.width -= thickness; break;
+                }
+            });
+        }
+
+        // Handle Dock
+        if (SettingsData.dockEnabled) {
+            // Check if dock is on this screen
+            // DMS usually puts dock on the primary screen (first in Quickshell.screens)
+            if (window.screen === Quickshell.screens[0]) {
+                let dockThickness = 72; // Safe estimate for dock + padding
+                switch (SettingsData.dockPosition) {
+                    case 0: area.y += dockThickness; area.height -= dockThickness; break;
+                    case 1: area.height -= dockThickness; break;
+                    case 2: area.x += dockThickness; area.width -= dockThickness; break;
+                    case 3: area.width -= dockThickness; break;
+                }
+            }
+        }
+
+        return area;
+    }
+
+    function yPosForPosition(pos, winHeight, workArea) {
         const padding = 8;
         switch (pos) {
-            case "top": case "top-left": case "top-right": return padding;
-            case "bottom": case "bottom-left": case "bottom-right": return screenHeight - winHeight - padding;
-            default: return (screenHeight - winHeight) / 2;
+            case "top": case "top-left": case "top-right": return workArea.y + padding;
+            case "bottom": case "bottom-left": case "bottom-right": return workArea.y + workArea.height - winHeight - padding;
+            default: return workArea.y + (workArea.height - winHeight) / 2;
         }
     }
 
-    function xPosForPosition(pos, winWidth, screenWidth) {
+    function xPosForPosition(pos, winWidth, workArea) {
         const padding = 8;
         switch (pos) {
-            case "left": case "top-left": case "bottom-left": return padding;
-            case "right": case "top-right": case "bottom-right": return screenWidth - winWidth - padding;
-            default: return (screenWidth - winWidth) / 2;
+            case "left": case "top-left": case "bottom-left": return workArea.x + padding;
+            case "right": case "top-right": case "bottom-right": return workArea.x + workArea.width - winWidth - padding;
+            default: return workArea.x + (workArea.width - winWidth) / 2;
         }
     }
 
     readonly property int minimizedSize: 40
 
     function updatePosition() {
-        let newX = xPosForPosition(spawnPosition, targetWidth, window.screen.width);
-        let newY = yPosForPosition(spawnPosition, targetHeight, window.screen.height);
+        let workArea = getWorkArea();
+        let newX = xPosForPosition(spawnPosition, targetWidth, workArea);
+        let newY = yPosForPosition(spawnPosition, targetHeight, workArea);
 
 
 
@@ -141,8 +203,8 @@ PanelWindow {
                             newY = oy - targetHeight - padding;
                             
                             // If we hit the top, move to a new column
-                            if (newY < padding) {
-                                newY = yPosForPosition(spawnPosition, targetHeight, window.screen.height);
+                            if (newY < workArea.y + padding) {
+                                newY = yPosForPosition(spawnPosition, targetHeight, workArea);
                                 if (spawnPosition.includes("right")) newX = ox - targetWidth - padding;
                                 else newX = ox + ow + padding;
                             }
@@ -151,8 +213,8 @@ PanelWindow {
                             newY = oy + oh + padding;
                             
                             // If we hit the bottom, move to a new column
-                            if (newY + targetHeight > window.screen.height - padding) {
-                                newY = yPosForPosition(spawnPosition, targetHeight, window.screen.height);
+                            if (newY + targetHeight > workArea.y + workArea.height - padding) {
+                                newY = yPosForPosition(spawnPosition, targetHeight, workArea);
                                 if (spawnPosition.includes("right")) newX = ox - targetWidth - padding;
                                 else newX = ox + ow + padding;
                             }
@@ -173,10 +235,10 @@ PanelWindow {
         }
 
 
-        // Final safety clamp to ensure padding from all edges
+        // Final safety clamp to ensure padding from all edges and respect workArea
         let edgePadding = 8;
-        newX = Math.max(edgePadding, Math.min(window.screen.width - targetWidth - edgePadding, newX));
-        newY = Math.max(edgePadding, Math.min(window.screen.height - targetHeight - edgePadding, newY));
+        newX = Math.max(workArea.x + edgePadding, Math.min(workArea.x + workArea.width - targetWidth - edgePadding, newX));
+        newY = Math.max(workArea.y + edgePadding, Math.min(workArea.y + workArea.height - targetHeight - edgePadding, newY));
 
         xPos = newX;
         yPos = newY;

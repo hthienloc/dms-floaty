@@ -34,6 +34,12 @@ dms ipc call floaty selectFileAndFloat
 
 # Close all active floating windows
 dms ipc call floaty closeAllWindows
+
+# Toggle minimize/expand for all windows
+dms ipc call floaty toggleMinimizeAll
+
+# Float image from a specific URL or Path
+dms ipc call floaty floatFromUrl "file:///path/to/image.png"
 ```
 
 ### Example: Screenshot to Floaty

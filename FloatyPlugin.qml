@@ -83,6 +83,16 @@ PluginComponent {
             root.closeAllWindows();
             return "SUCCESS";
         }
+
+        function floatFromUrl(url: string): string {
+            root.spawnWindow(url);
+            return "SUCCESS";
+        }
+
+        function toggleMinimizeAll(): string {
+            root.toggleMinimizeAll();
+            return "SUCCESS";
+        }
     }
 
     popoutContent: Component {
@@ -236,6 +246,14 @@ PluginComponent {
             } else if (win) {
                 win.destroy();
             }
+        });
+    }
+
+    function toggleMinimizeAll() {
+        if (root.openWindows.length === 0) return;
+        let anyExpanded = root.openWindows.some(win => !win.isMinimized);
+        root.openWindows.forEach(win => {
+            win.isMinimized = anyExpanded;
         });
     }
 

@@ -2,6 +2,7 @@ import QtQuick
 import qs.Common
 import qs.Widgets
 import qs.Modules.Plugins
+import Quickshell.Io
 
 PluginSettings {
     id: root
@@ -209,78 +210,62 @@ PluginSettings {
                 width: parent.width
                 spacing: Theme.spacingS
 
-                Rectangle {
-                    width: parent.width
-                    height: cmdText.implicitHeight + 16
-                    color: Theme.surfaceContainer
-                    radius: 4
-                    StyledText {
-                        id: cmdText
-                        anchors.centerIn: parent
-                        text: "dms ipc call floaty floatFromClipboard"
-                        font.family: "Monospace"
-                        font.pixelSize: Theme.fontSizeSmall
-                        color: Theme.secondary
-                    }
-                }
+                Repeater {
+                    model: [
+                        { text: "dms ipc call floaty floatFromClipboard", label: "Float from Clipboard" },
+                        { text: "dms ipc call floaty selectFileAndFloat", label: "Select File and Float" },
+                        { text: "dms ipc call floaty closeAllWindows", label: "Close All Windows" },
+                        { text: "dms ipc call floaty toggleMinimizeAll", label: "Toggle Minimize All" },
+                        { text: "dms ipc call floaty floatFromUrl \"URL\"", label: "Float from URL/Path" },
+                        { text: "grim -g \"$(slurp)\" - | wl-copy && dms ipc call floaty floatFromClipboard", label: "Screenshot and Float" }
+                    ]
+                    
+                    delegate: Column {
+                        width: parent.width
+                        spacing: 4
+                        
+                        StyledText {
+                            text: modelData.label
+                            font.pixelSize: Theme.fontSizeSmall
+                            font.bold: true
+                            color: Theme.surfaceVariantText
+                        }
 
-                Rectangle {
-                    width: parent.width
-                    height: cmdText2.implicitHeight + 16
-                    color: Theme.surfaceContainer
-                    radius: 4
-                    StyledText {
-                        id: cmdText2
-                        anchors.centerIn: parent
-                        text: "dms ipc call floaty selectFileAndFloat"
-                        font.family: "Monospace"
-                        font.pixelSize: Theme.fontSizeSmall
-                        color: Theme.secondary
-                    }
-                }
+                        Rectangle {
+                            width: parent.width
+                            height: Math.max(40, cmdRow.implicitHeight + 16)
+                            color: Theme.surfaceContainer
+                            radius: 4
+                            
+                            Row {
+                                id: cmdRow
+                                width: parent.width - 16
+                                anchors.centerIn: parent
+                                spacing: 8
+                                
+                                StyledText {
+                                    width: parent.width - 32
+                                    text: modelData.text
+                                    font.family: "Monospace"
+                                    font.pixelSize: Theme.fontSizeSmall
+                                    color: Theme.secondary
+                                    wrapMode: Text.Wrap
+                                }
 
-                Rectangle {
-                    width: parent.width
-                    height: cmdText3.implicitHeight + 16
-                    color: Theme.surfaceContainer
-                    radius: 4
-                    StyledText {
-                        id: cmdText3
-                        anchors.centerIn: parent
-                        text: "dms ipc call floaty closeAllWindows"
-                        font.family: "Monospace"
-                        font.pixelSize: Theme.fontSizeSmall
-                        color: Theme.secondary
-                    }
-                }
-
-                Rectangle {
-                    width: parent.width
-                    height: cmdText4.implicitHeight + 16
-                    color: Theme.surfaceContainer
-                    radius: 4
-                    StyledText {
-                        id: cmdText4
-                        anchors.centerIn: parent
-                        text: "dms ipc call floaty toggleMinimizeAll"
-                        font.family: "Monospace"
-                        font.pixelSize: Theme.fontSizeSmall
-                        color: Theme.secondary
-                    }
-                }
-
-                Rectangle {
-                    width: parent.width
-                    height: cmdText5.implicitHeight + 16
-                    color: Theme.surfaceContainer
-                    radius: 4
-                    StyledText {
-                        id: cmdText5
-                        anchors.centerIn: parent
-                        text: "dms ipc call floaty floatFromUrl \"URL\""
-                        font.family: "Monospace"
-                        font.pixelSize: Theme.fontSizeSmall
-                        color: Theme.secondary
+                                DankButton {
+                                    width: 24; height: 24
+                                    iconName: "content_copy"
+                                    backgroundColor: "transparent"
+                                    textColor: Theme.primary
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    onClicked: {
+                                        Proc.runCommand("sh", ["-c", "echo -n '" + modelData.text + "' | wl-copy"], function() {
+                                            ToastService.showInfo("Copied to clipboard");
+                                        });
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -294,17 +279,38 @@ PluginSettings {
 
             Rectangle {
                 width: parent.width
-                height: niriExample.implicitHeight + 16
+                height: Math.max(80, niriRow.implicitHeight + 16)
                 color: Theme.surfaceContainer
                 radius: 4
-                StyledText {
-                    id: niriExample
-                    anchors.fill: parent
-                    anchors.margins: 8
-                    text: "bindings {\n    Print { spawn \"sh\" \"-c\" \"grim -g \\\"$(slurp)\\\" - | wl-copy && dms ipc call floaty floatFromClipboard\"; }\n}"
-                    font.family: "Monospace"
-                    font.pixelSize: 11
-                    color: Theme.secondary
+                
+                Row {
+                    id: niriRow
+                    width: parent.width - 16
+                    anchors.centerIn: parent
+                    spacing: 8
+                    
+                    StyledText {
+                        id: niriExample
+                        width: parent.width - 32
+                        text: "bindings {\n    Print { spawn \"sh\" \"-c\" \"grim -g \\\"$(slurp)\\\" - | wl-copy && dms ipc call floaty floatFromClipboard\"; }\n}"
+                        font.family: "Monospace"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.secondary
+                        wrapMode: Text.Wrap
+                    }
+
+                    DankButton {
+                        width: 24; height: 24
+                        iconName: "content_copy"
+                        backgroundColor: "transparent"
+                        textColor: Theme.primary
+                        anchors.top: parent.top
+                        onClicked: {
+                            Proc.runCommand("sh", ["-c", "echo -n '" + niriExample.text + "' | wl-copy"], function() {
+                                ToastService.showInfo("Copied to clipboard");
+                            });
+                        }
+                    }
                 }
             }
         }

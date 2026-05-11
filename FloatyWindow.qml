@@ -193,12 +193,12 @@ PanelWindow {
 
 
 
-        let avoidStacking = true;
-        if (plugin && plugin.pluginData && plugin.pluginData.avoidStacking !== undefined) {
-            avoidStacking = plugin.pluginData.avoidStacking;
+        let autoTiling = true;
+        if (plugin && plugin.pluginData && plugin.pluginData.autoTiling !== undefined) {
+            autoTiling = plugin.pluginData.autoTiling;
         }
 
-        if (avoidStacking && !manuallyMoved && plugin && plugin.openWindows) {
+        if (autoTiling && !manuallyMoved && plugin && plugin.openWindows) {
             let currentWindows = plugin.openWindows;
             let attempts = 0;
             let maxAttempts = 50; 

@@ -132,6 +132,13 @@ PluginSettings {
                 defaultValue: false
             }
 
+            ToggleSetting {
+                settingKey: "showBarPill"
+                label: "Show Bar Pill"
+                description: "Display the icon on the status bar."
+                defaultValue: true
+            }
+
             SliderSetting {
                 settingKey: "minimizeDelay"
                 label: "Minimize Delay"
@@ -141,6 +148,95 @@ PluginSettings {
                 unit: "ms"
                 defaultValue: 3000
                 enabled: autoMinimizeToggle.checked
+            }
+        }
+    }
+
+    // Shortcut Guide Card
+    StyledRect {
+        width: parent.width
+        height: guideColumn.implicitHeight + Theme.spacingL * 2
+        radius: Theme.cornerRadius
+        color: Theme.surfaceContainerHigh
+
+        Column {
+            id: guideColumn
+            anchors.fill: parent
+            anchors.margins: Theme.spacingL
+            spacing: Theme.spacingM
+
+            StyledText {
+                text: "Shortcut Setup Guide"
+                font.pixelSize: Theme.fontSizeMedium
+                font.weight: Font.Medium
+                color: Theme.primary
+            }
+
+            StyledText {
+                width: parent.width
+                text: "Use these commands in your Window Manager (Niri, Hyprland, etc.) or custom scripts to trigger Floaty actions:"
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceText
+                wrapMode: Text.WordWrap
+            }
+
+            // Command list
+            Column {
+                width: parent.width
+                spacing: Theme.spacingS
+
+                Rectangle {
+                    width: parent.width
+                    height: cmdText.implicitHeight + 16
+                    color: Theme.surfaceContainer
+                    radius: 4
+                    StyledText {
+                        id: cmdText
+                        anchors.centerIn: parent
+                        text: "dms ipc call floaty floatFromClipboard"
+                        font.family: "Monospace"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.secondary
+                    }
+                }
+
+                Rectangle {
+                    width: parent.width
+                    height: cmdText2.implicitHeight + 16
+                    color: Theme.surfaceContainer
+                    radius: 4
+                    StyledText {
+                        id: cmdText2
+                        anchors.centerIn: parent
+                        text: "dms ipc call floaty selectFileAndFloat"
+                        font.family: "Monospace"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.secondary
+                    }
+                }
+            }
+
+            StyledText {
+                text: "Example for Niri (config.kdl):"
+                font.pixelSize: Theme.fontSizeSmall
+                font.bold: true
+                color: Theme.surfaceText
+            }
+
+            Rectangle {
+                width: parent.width
+                height: niriExample.implicitHeight + 16
+                color: Theme.surfaceContainerLowest
+                radius: 4
+                StyledText {
+                    id: niriExample
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    text: "bindings {\n    Print { spawn \"sh\" \"-c\" \"grim -g \\\"$(slurp)\\\" - | wl-copy && dms ipc call floaty floatFromClipboard\"; }\n}"
+                    font.family: "Monospace"
+                    font.pixelSize: 11
+                    color: Theme.surfaceVariantText
+                }
             }
         }
     }

@@ -16,13 +16,13 @@ A minimalist reference image plugin for DankMaterialShell. Float images on top o
 ## Controls
 - **Left Click + Drag**: Move the floating image.
 - **Scroll Wheel / Pinch Gesture**: Resize (Zoom) the image.
-- **Middle Click**: Toggle minimized state (manual shrink/expand).
-- **Right Click Image**: Close the image window.
+- **Right Click**: Toggle minimized state (manual shrink/expand).
+- **Middle Click**: Close the image window.
 - **Right Click Bar Icon**: Instant paste from clipboard.
 - **Left Click Bar Icon**: Open control menu (Popout).
 
 ## IPC Commands
-Floaty exposes commands that you can bind to keyboard shortcuts in your window manager (e.g., Niri, Hyprland):
+Floaty exposes commands that you can bind to keyboard shortcuts or use in scripts:
 
 ```bash
 # Float current clipboard image
@@ -32,14 +32,27 @@ dms ipc call floaty floatFromClipboard
 dms ipc call floaty selectFileAndFloat
 ```
 
-### Example: Screenshot to Floaty (Niri)
-Add this to your `config.kdl` to automatically float a screenshot:
+### Example: Screenshot to Floaty
+You can combine these commands with tools like `grim` and `slurp` for a seamless screenshot workflow.
+
+#### Option 1: Window Manager Binding (e.g., Niri)
+Add this to your `config.kdl`:
 ```kdl
 bindings {
     Print { 
         spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy && dms ipc call floaty floatFromClipboard"; 
     }
 }
+```
+
+#### Option 2: DMS Action Binding
+You can also bind the command directly in DMS Settings:
+
+![DMS Settings](image.png)
+
+Command to use:
+```bash
+grim -g "$(slurp)" - | wl-copy && dms ipc call floaty floatFromClipboard
 ```
 
 ## Notes

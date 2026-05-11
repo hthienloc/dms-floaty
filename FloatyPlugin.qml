@@ -13,8 +13,14 @@ PluginComponent {
     // Simple count is enough and more reliable for QML property binding
     property int activeWindowCount: 0
 
+    readonly property bool showBarPill: root.pluginData.showBarPill ?? true
+
     // Bar Pill - Standardized with QR Generator Style
-    horizontalBarPill: Component {
+    horizontalBarPill: showBarPill ? horizontalPillComp : null
+    verticalBarPill: showBarPill ? verticalPillComp : null
+
+    Component {
+        id: horizontalPillComp
         Row {
             spacing: Theme.spacingS
             DankIcon {
@@ -26,7 +32,8 @@ PluginComponent {
         }
     }
 
-    verticalBarPill: Component {
+    Component {
+        id: verticalPillComp
         Column {
             spacing: Theme.spacingS
             DankIcon {
@@ -42,10 +49,19 @@ PluginComponent {
         root.floatFromClipboard();
     }
 
-    ipcCommands: ({
-        "floatFromClipboard": () => root.floatFromClipboard(),
-        "selectFileAndFloat": () => root.selectFileAndFloat()
-    })
+    IpcHandler {
+        target: "floaty"
+
+        function floatFromClipboard(): string {
+            root.floatFromClipboard();
+            return "SUCCESS";
+        }
+
+        function selectFileAndFloat(): string {
+            root.selectFileAndFloat();
+            return "SUCCESS";
+        }
+    }
 
     popoutContent: Component {
         PopoutComponent {

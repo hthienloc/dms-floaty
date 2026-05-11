@@ -96,17 +96,19 @@ PanelWindow {
         }
     }
 
+    readonly property int minimizedSize: 40
+
     function updatePosition() {
         let newX = xPosForPosition(spawnPosition, targetWidth, window.screen.width);
         let newY = yPosForPosition(spawnPosition, targetHeight, window.screen.height);
-        
+
         if (window.isMinimized) {
             let centerX = newX + targetWidth / 2;
             let centerY = newY + targetHeight / 2;
-            if (centerX > window.screen.width / 2) newX += (targetWidth - 56);
-            if (centerY > window.screen.height / 2) newY += (targetHeight - 56);
+            if (centerX > window.screen.width / 2) newX += (targetWidth - minimizedSize);
+            if (centerY > window.screen.height / 2) newY += (targetHeight - minimizedSize);
         }
-        
+
         xPos = newX;
         yPos = newY;
     }
@@ -133,7 +135,7 @@ PanelWindow {
     StyledRect {
         id: container
         anchors.fill: parent
-radius: Theme.cornerRadius
+        radius: Theme.cornerRadius
         color: Theme.surfaceContainer
         border.color: window.borderColor === "primary" ? Theme.primary : 
                       window.borderColor === "surfaceContainerHighest" ? Theme.surfaceContainerHighest :
@@ -170,7 +172,7 @@ radius: Theme.cornerRadius
                     antialiasing: true
                 }
             }
-            
+
             onStatusChanged: {
                 if (status === Image.Ready) {
                     let ratio = implicitHeight / implicitWidth;
@@ -193,7 +195,7 @@ radius: Theme.cornerRadius
             id: cloudIcon
             name: "cloud"
             anchors.centerIn: parent
-            size: Theme.iconSize
+            size: Theme.iconSizeSmall
             color: Theme.onPrimary
             opacity: 0
             visible: opacity > 0
@@ -222,7 +224,7 @@ radius: Theme.cornerRadius
             hoverEnabled: true
             cursorShape: Qt.SizeAllCursor
             acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-            
+
             drag.target: dragTarget
             drag.axis: Drag.XAndYAxis
             drag.threshold: 0
@@ -231,7 +233,7 @@ radius: Theme.cornerRadius
                 minimizeTimer.stop();
                 window.isMinimized = false;
             }
-            
+
             onExited: {
                 if (window.autoMinimize && !drag.active) {
                     minimizeTimer.restart();
@@ -248,7 +250,7 @@ radius: Theme.cornerRadius
 
             onWheel: (wheel) => {
                 if (window.isMinimized) return;
-                
+
                 let scaleFactor = Math.pow(1.1, wheel.angleDelta.y / 120.0);
                 let oldWidth = window.targetWidth;
                 let oldHeight = window.targetHeight;
@@ -274,7 +276,7 @@ radius: Theme.cornerRadius
                     window.yPos -= (newHeight - oldHeight);
                 }
                 // else: center is in top half, keep top edge fixed (do nothing to y)
-                
+
                 window.targetWidth = newWidth;
                 window.targetHeight = newHeight;
             }
@@ -285,8 +287,8 @@ radius: Theme.cornerRadius
             State {
                 name: "minimized"
                 when: window.isMinimized
-                PropertyChanges { target: window; width: 56; height: 56 }
-                PropertyChanges { target: container; radius: 28; color: Theme.primary; border.width: 0 }
+                PropertyChanges { target: window; width: minimizedSize; height: minimizedSize }
+                PropertyChanges { target: container; radius: minimizedSize / 2; color: Theme.primary; border.width: 0; opacity: 0.5 }
                 PropertyChanges { target: img; opacity: 0 }
                 PropertyChanges { target: cloudIcon; opacity: 1 }
             }
@@ -312,8 +314,8 @@ radius: Theme.cornerRadius
                             let screenWidth = window.screen.width;
                             let screenHeight = window.screen.height;
 
-                            if (centerX > screenWidth / 2) window.xPos += (oldWidth - 56);
-                            if (centerY > screenHeight / 2) window.yPos += (oldHeight - 56);
+                            if (centerX > screenWidth / 2) window.xPos += (oldWidth - minimizedSize);
+                            if (centerY > screenHeight / 2) window.yPos += (oldHeight - minimizedSize);
                         }
                     }
                     PropertyAction { 
@@ -323,7 +325,7 @@ radius: Theme.cornerRadius
                     NumberAnimation {
                         target: container
                         property: "opacity"
-                        to: 1
+                        to: 0.5
                         duration: 80
                         easing.type: Easing.InQuad
                     }
@@ -343,13 +345,13 @@ radius: Theme.cornerRadius
                         script: {
                             let oldWidth = window.targetWidth;
                             let oldHeight = window.targetHeight;
-                            let centerX = window.xPos + 28;
-                            let centerY = window.yPos + 28;
+                            let centerX = window.xPos + minimizedSize / 2;
+                            let centerY = window.yPos + minimizedSize / 2;
                             let screenWidth = window.screen.width;
                             let screenHeight = window.screen.height;
 
-                            if (centerX > screenWidth / 2) window.xPos -= (oldWidth - 56);
-                            if (centerY > screenHeight / 2) window.yPos -= (oldHeight - 56);
+                            if (centerX > screenWidth / 2) window.xPos -= (oldWidth - minimizedSize);
+                            if (centerY > screenHeight / 2) window.yPos -= (oldHeight - minimizedSize);
                         }
                     }
                     PropertyAction { 
@@ -365,6 +367,5 @@ radius: Theme.cornerRadius
                     }
                 }
             }
-        ]
-    }
+        ]    }
 }

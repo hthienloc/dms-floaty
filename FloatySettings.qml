@@ -139,6 +139,13 @@ PluginSettings {
                 defaultValue: true
             }
 
+            ToggleSetting {
+                settingKey: "avoidStacking"
+                label: "Auto-Place Windows"
+                description: "Place new windows in empty spots instead of stacking."
+                defaultValue: true
+            }
+
             SliderSetting {
                 settingKey: "minimizeDelay"
                 label: "Minimize Delay"

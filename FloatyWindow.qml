@@ -26,6 +26,7 @@ PanelWindow {
     readonly property string borderColor: pluginData.borderColor ?? "outlineVariant"
     property string spawnPosition: "center"
     property int maxHeight: 0
+    property var plugin: null
 
     onPluginDataChanged: {
         if (pluginData) {
@@ -102,12 +103,75 @@ PanelWindow {
         let newX = xPosForPosition(spawnPosition, targetWidth, window.screen.width);
         let newY = yPosForPosition(spawnPosition, targetHeight, window.screen.height);
 
+
+
+        let avoidStacking = true;
+        if (plugin && plugin.pluginData && plugin.pluginData.avoidStacking !== undefined) {
+            avoidStacking = plugin.pluginData.avoidStacking;
+        }
+
+        if (avoidStacking && !manuallyMoved && plugin && plugin.openWindows) {
+            let padding = 8;
+            let currentWindows = plugin.openWindows;
+            let attempts = 0;
+            let maxAttempts = 50; 
+            
+            let overlapping = true;
+            while (overlapping && attempts < maxAttempts) {
+                overlapping = false;
+                for (let i = 0; i < currentWindows.length; i++) {
+                    let other = currentWindows[i];
+                    if (!other || other === window || other.isMinimized) continue;
+                    
+                    let ox = other.xPos;
+                    let oy = other.yPos;
+                    let ow = other.targetWidth;
+                    let oh = other.targetHeight;
+
+                    // Standard AABB overlap check with padding
+                    let isOverlapping = !(newX + targetWidth + padding <= ox || 
+                                          newX >= ox + ow + padding ||
+                                          newY + targetHeight + padding <= oy ||
+                                          newY >= oy + oh + padding);
+                    
+                    if (isOverlapping) {
+                        // Vertical stacking direction depends on whether we started at top or bottom
+                        if (spawnPosition.includes("bottom")) {
+                            // Stack UPWARDS
+                            newY = oy - targetHeight - padding;
+                            
+                            // If we hit the top, move to a new column
+                            if (newY < padding) {
+                                newY = yPosForPosition(spawnPosition, targetHeight, window.screen.height);
+                                if (spawnPosition.includes("right")) newX = ox - targetWidth - padding;
+                                else newX = ox + ow + padding;
+                            }
+                        } else {
+                            // Stack DOWNWARDS (default for top or center)
+                            newY = oy + oh + padding;
+                            
+                            // If we hit the bottom, move to a new column
+                            if (newY + targetHeight > window.screen.height - padding) {
+                                newY = yPosForPosition(spawnPosition, targetHeight, window.screen.height);
+                                if (spawnPosition.includes("right")) newX = ox - targetWidth - padding;
+                                else newX = ox + ow + padding;
+                            }
+                        }
+                        overlapping = true;
+                        break; 
+                    }
+                }
+                attempts++;
+            }
+        }
+
         if (window.isMinimized) {
             let centerX = newX + targetWidth / 2;
             let centerY = newY + targetHeight / 2;
             if (centerX > window.screen.width / 2) newX += (targetWidth - minimizedSize);
             if (centerY > window.screen.height / 2) newY += (targetHeight - minimizedSize);
         }
+
 
         xPos = newX;
         yPos = newY;

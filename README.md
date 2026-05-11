@@ -11,6 +11,7 @@ A minimalist reference image plugin for DankMaterialShell. Float images on top o
 - **Smart Auto-Minimize**: Automatically shrinks to an icon when idle to save screen space.
 - **Dynamic Resizing**: Scale images using your mouse wheel.
 - **Drag & Move**: Reposition images anywhere on your screen.
+- **Intelligent Auto-Tiling**: Newly spawned images automatically stack vertically without overlapping, respecting screen boundaries and user-defined padding.
 - **Smart Bar Icon**: The pill icon changes to your accent color when images are active.
 
 ## Controls

@@ -12,6 +12,7 @@ PluginComponent {
 
     // Simple count is enough and more reliable for QML property binding
     property int activeWindowCount: 0
+    property var openWindows: []
 
     readonly property bool showBarPill: root.pluginData.showBarPill ?? true
 
@@ -205,13 +206,18 @@ PluginComponent {
                 imageSource: source,
                 spawnPosition: spawnPosition,
                 initialWidth: initialWidth,
-                pluginData: root.pluginData
+                pluginData: root.pluginData,
+                plugin: root
             });
 
             if (win !== null) {
                 root.activeWindowCount++;
+                root.openWindows = [...root.openWindows, win];
+
                 win.closing.connect(function() {
                     root.activeWindowCount--;
+                    root.openWindows = root.openWindows.filter(w => w !== win);
+
                 });
             } else {
                 ToastService.showError("Failed to float image.");

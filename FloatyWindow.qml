@@ -285,57 +285,63 @@ radius: Theme.cornerRadius
         transitions: [
             Transition {
                 from: ""; to: "minimized"
-                ParallelAnimation {
+                SequentialAnimation {
                     NumberAnimation {
-                        target: window; properties: "width,height"
-                        duration: 80
-                        easing.type: Easing.BezierSpline
-                        easing.bezierCurve: Theme.expressiveCurves.emphasizedDecel
-                    }
-                    NumberAnimation {
-                        target: container; properties: "radius"
+                        target: img; property: "opacity"
                         duration: 80
                         easing.type: Easing.OutCubic
                     }
-                    ColorAnimation {
-                        target: container
-                        duration: 80
-                    }
-                    NumberAnimation {
-                        target: img; property: "opacity"
-                        duration: 40
+                    ParallelAnimation {
+                        NumberAnimation {
+                            target: window; properties: "width,height"
+                            duration: 150
+                            easing.type: Easing.OutExpo
+                        }
+                        NumberAnimation {
+                            target: container; properties: "radius"
+                            duration: 150
+                            easing.type: Easing.OutCubic
+                        }
+                        ColorAnimation {
+                            target: container
+                            duration: 150
+                        }
                     }
                     NumberAnimation {
                         target: cloudIcon; property: "opacity"
-                        duration: 40
+                        duration: 100
+                        easing.type: Easing.InCubic
                     }
                 }
             },
             Transition {
                 from: "minimized"; to: ""
-                ParallelAnimation {
+                SequentialAnimation {
                     NumberAnimation {
-                        target: window; properties: "width,height"
-                        duration: 120
-                        easing.type: Easing.BezierSpline
-                        easing.bezierCurve: Theme.expressiveCurves.emphasized
-                    }
-                    NumberAnimation {
-                        target: container; properties: "radius"
-                        duration: 120
+                        target: cloudIcon; property: "opacity"
+                        duration: 80
                         easing.type: Easing.OutCubic
                     }
-                    ColorAnimation {
-                        target: container
-                        duration: 120
+                    ParallelAnimation {
+                        NumberAnimation {
+                            target: window; properties: "width,height"
+                            duration: 200
+                            easing.type: Easing.OutExpo
+                        }
+                        NumberAnimation {
+                            target: container; properties: "radius"
+                            duration: 200
+                            easing.type: Easing.OutCubic
+                        }
+                        ColorAnimation {
+                            target: container
+                            duration: 200
+                        }
                     }
                     NumberAnimation {
                         target: img; property: "opacity"
-                        duration: 120
-                    }
-                    NumberAnimation {
-                        target: cloudIcon; property: "opacity"
-                        duration: 60
+                        duration: 150
+                        easing.type: Easing.InCubic
                     }
                 }
             }

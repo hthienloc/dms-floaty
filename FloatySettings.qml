@@ -101,6 +101,16 @@ PluginSettings {
                 ]
                 defaultValue: "bottom-left"
             }
+
+            SliderSetting {
+                settingKey: "edgeSpacing"
+                label: "Edge Spacing"
+                description: "Distance from screen edges, bars, and other windows."
+                minimum: 0
+                maximum: 64
+                unit: "px"
+                defaultValue: 8
+            }
         }
     }
 

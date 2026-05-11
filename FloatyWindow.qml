@@ -28,6 +28,8 @@ PanelWindow {
     property int maxHeight: 0
     property var plugin: null
 
+    readonly property real edgeSpacing: pluginData.edgeSpacing ?? 8
+
     onPluginDataChanged: {
         if (pluginData) {
             spawnPosition = pluginData.spawnPosition || "center";
@@ -110,7 +112,19 @@ PanelWindow {
                 
                 if (!onThisScreen) return;
 
-                let thickness = SettingsData.frameEnabled ? SettingsData.frameBarSize : ((cfg.thickness ?? 40) + (cfg.innerPadding ?? 4) * 2 + 8);
+                const innerPadding = cfg.innerPadding ?? 4;
+                const spacing = cfg.spacing ?? 4;
+                const bottomGap = (typeof Theme !== "undefined" && Theme.isConnectedEffect) ? 0 : (cfg.bottomGap ?? 0);
+                
+                let thickness = 0;
+                if (SettingsData.frameEnabled) {
+                    thickness = SettingsData.frameBarSize;
+                } else {
+                    const widgetThickness = Math.max(20, 26 + innerPadding * 0.6);
+                    const barHeight = typeof Theme !== "undefined" ? Theme.barHeight : 48;
+                    const effectiveBarThickness = Math.max(widgetThickness + innerPadding + 4, barHeight - 4 - (8 - innerPadding));
+                    thickness = effectiveBarThickness + spacing + bottomGap;
+                }
                 
                 // Position: 0=Top, 1=Bottom, 2=Left, 3=Right
                 switch (cfg.position) {
@@ -127,12 +141,22 @@ PanelWindow {
             // Check if dock is on this screen
             // DMS usually puts dock on the primary screen (first in Quickshell.screens)
             if (window.screen === Quickshell.screens[0]) {
-                let dockThickness = 72; // Safe estimate for dock + padding
+                const iconSize = SettingsData.dockIconSize ?? 40;
+                const spacing = SettingsData.dockSpacing ?? 4;
+                const borderThickness = SettingsData.dockBorderEnabled ? (SettingsData.dockBorderThickness ?? 1) : 0;
+                const bodyThickness = iconSize + spacing * 2 + borderThickness * 2;
+                
+                const reserveOffset = SettingsData.dockBottomGap ?? 0;
+                const effectiveMargin = (typeof Theme !== "undefined" && Theme.isConnectedEffect) ? 0 : (SettingsData.dockMargin ?? 0);
+                
+                // We add a small buffer (8px) to avoid windows being exactly flush against the dock
+                const dockThickness = bodyThickness + reserveOffset + effectiveMargin + 8;
+                
                 switch (SettingsData.dockPosition) {
-                    case 0: area.y += dockThickness; area.height -= dockThickness; break;
-                    case 1: area.height -= dockThickness; break;
-                    case 2: area.x += dockThickness; area.width -= dockThickness; break;
-                    case 3: area.width -= dockThickness; break;
+                    case 0: area.y += dockThickness; area.height -= dockThickness; break; // Top
+                    case 1: area.height -= dockThickness; break; // Bottom
+                    case 2: area.x += dockThickness; area.width -= dockThickness; break; // Left
+                    case 3: area.width -= dockThickness; break; // Right
                 }
             }
         }
@@ -141,19 +165,17 @@ PanelWindow {
     }
 
     function yPosForPosition(pos, winHeight, workArea) {
-        const padding = 8;
         switch (pos) {
-            case "top": case "top-left": case "top-right": return workArea.y + padding;
-            case "bottom": case "bottom-left": case "bottom-right": return workArea.y + workArea.height - winHeight - padding;
+            case "top": case "top-left": case "top-right": return workArea.y + edgeSpacing;
+            case "bottom": case "bottom-left": case "bottom-right": return workArea.y + workArea.height - winHeight - edgeSpacing;
             default: return workArea.y + (workArea.height - winHeight) / 2;
         }
     }
 
     function xPosForPosition(pos, winWidth, workArea) {
-        const padding = 8;
         switch (pos) {
-            case "left": case "top-left": case "bottom-left": return workArea.x + padding;
-            case "right": case "top-right": case "bottom-right": return workArea.x + workArea.width - winWidth - padding;
+            case "left": case "top-left": case "bottom-left": return workArea.x + edgeSpacing;
+            case "right": case "top-right": case "bottom-right": return workArea.x + workArea.width - winWidth - edgeSpacing;
             default: return workArea.x + (workArea.width - winWidth) / 2;
         }
     }
@@ -173,7 +195,6 @@ PanelWindow {
         }
 
         if (avoidStacking && !manuallyMoved && plugin && plugin.openWindows) {
-            let padding = 8;
             let currentWindows = plugin.openWindows;
             let attempts = 0;
             let maxAttempts = 50; 
@@ -191,32 +212,32 @@ PanelWindow {
                     let oh = other.targetHeight;
 
                     // Standard AABB overlap check with padding
-                    let isOverlapping = !(newX + targetWidth + padding <= ox || 
-                                          newX >= ox + ow + padding ||
-                                          newY + targetHeight + padding <= oy ||
-                                          newY >= oy + oh + padding);
+                    let isOverlapping = !(newX + targetWidth + edgeSpacing <= ox || 
+                                          newX >= ox + ow + edgeSpacing ||
+                                          newY + targetHeight + edgeSpacing <= oy ||
+                                          newY >= oy + oh + edgeSpacing);
                     
                     if (isOverlapping) {
                         // Vertical stacking direction depends on whether we started at top or bottom
                         if (spawnPosition.includes("bottom")) {
                             // Stack UPWARDS
-                            newY = oy - targetHeight - padding;
+                            newY = oy - targetHeight - edgeSpacing;
                             
                             // If we hit the top, move to a new column
-                            if (newY < workArea.y + padding) {
+                            if (newY < workArea.y + edgeSpacing) {
                                 newY = yPosForPosition(spawnPosition, targetHeight, workArea);
-                                if (spawnPosition.includes("right")) newX = ox - targetWidth - padding;
-                                else newX = ox + ow + padding;
+                                if (spawnPosition.includes("right")) newX = ox - targetWidth - edgeSpacing;
+                                else newX = ox + ow + edgeSpacing;
                             }
                         } else {
                             // Stack DOWNWARDS (default for top or center)
-                            newY = oy + oh + padding;
+                            newY = oy + oh + edgeSpacing;
                             
                             // If we hit the bottom, move to a new column
-                            if (newY + targetHeight > workArea.y + workArea.height - padding) {
+                            if (newY + targetHeight > workArea.y + workArea.height - edgeSpacing) {
                                 newY = yPosForPosition(spawnPosition, targetHeight, workArea);
-                                if (spawnPosition.includes("right")) newX = ox - targetWidth - padding;
-                                else newX = ox + ow + padding;
+                                if (spawnPosition.includes("right")) newX = ox - targetWidth - edgeSpacing;
+                                else newX = ox + ow + edgeSpacing;
                             }
                         }
                         overlapping = true;
@@ -236,9 +257,8 @@ PanelWindow {
 
 
         // Final safety clamp to ensure padding from all edges and respect workArea
-        let edgePadding = 8;
-        newX = Math.max(workArea.x + edgePadding, Math.min(workArea.x + workArea.width - targetWidth - edgePadding, newX));
-        newY = Math.max(workArea.y + edgePadding, Math.min(workArea.y + workArea.height - targetHeight - edgePadding, newY));
+        newX = Math.max(workArea.x + edgeSpacing, Math.min(workArea.x + workArea.width - targetWidth - edgeSpacing, newX));
+        newY = Math.max(workArea.y + edgeSpacing, Math.min(workArea.y + workArea.height - targetHeight - edgeSpacing, newY));
 
         xPos = newX;
         yPos = newY;

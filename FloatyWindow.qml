@@ -182,6 +182,10 @@ PanelWindow {
 
     readonly property int minimizedSize: 40
 
+    function close() {
+        opacityToClose.start();
+    }
+
     function updatePosition() {
         let workArea = getWorkArea();
         let newX = xPosForPosition(spawnPosition, targetWidth, workArea);

@@ -62,6 +62,11 @@ PluginComponent {
             root.selectFileAndFloat();
             return "SUCCESS";
         }
+
+        function closeAllWindows(): string {
+            root.closeAllWindows();
+            return "SUCCESS";
+        }
     }
 
     popoutContent: Component {
@@ -102,6 +107,19 @@ PluginComponent {
                             root.selectFileAndFloat();
                             root.closePopout();
                         }
+                    }
+                }
+
+                DankButton {
+                    text: "Close All Windows"
+                    width: parent.width
+                    iconName: "delete_sweep"
+                    backgroundColor: Theme.errorContainer
+                    textColor: Theme.error
+                    visible: root.activeWindowCount > 0
+                    onClicked: {
+                        root.closeAllWindows();
+                        root.closePopout();
                     }
                 }
 
@@ -192,6 +210,17 @@ PluginComponent {
             },
             0
         );
+    }
+
+    function closeAllWindows() {
+        const windows = [...root.openWindows];
+        windows.forEach(win => {
+            if (win && typeof win.close === "function") {
+                win.close();
+            } else if (win) {
+                win.destroy();
+            }
+        });
     }
 
     function spawnWindow(source) {

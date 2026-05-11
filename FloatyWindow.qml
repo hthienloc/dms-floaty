@@ -28,7 +28,7 @@ PanelWindow {
     property int maxHeight: 0
     property var plugin: null
 
-    readonly property real edgeSpacing: pluginData.edgeSpacing ?? 8
+    readonly property real edgeSpacing: pluginData.edgeSpacing ?? Appearance.spacing.normal
 
     onPluginDataChanged: {
         if (pluginData) {

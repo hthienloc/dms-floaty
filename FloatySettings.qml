@@ -109,7 +109,7 @@ PluginSettings {
                 minimum: 0
                 maximum: 64
                 unit: "px"
-                defaultValue: 8
+                defaultValue: Appearance.spacing.normal
             }
         }
     }

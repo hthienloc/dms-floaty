@@ -31,6 +31,9 @@ dms ipc call floaty floatFromClipboard
 
 # Open file selector to float
 dms ipc call floaty selectFileAndFloat
+
+# Close all active floating windows
+dms ipc call floaty closeAllWindows
 ```
 
 ### Example: Screenshot to Floaty

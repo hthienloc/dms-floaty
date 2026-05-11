@@ -165,6 +165,16 @@ PluginSettings {
             }
 
             SliderSetting {
+                settingKey: "minImageSize"
+                label: "Minimum Image Size"
+                description: "Ignore images smaller than this dimension (px) to prevent corrupted spawns."
+                minimum: 0
+                maximum: 100
+                unit: "px"
+                defaultValue: 16
+            }
+
+            SliderSetting {
                 settingKey: "minimizeDelay"
                 label: "Minimize Delay"
                 description: "Wait time before shrinking (ms)."

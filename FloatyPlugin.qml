@@ -345,6 +345,39 @@ PluginComponent {
     }
 
     function spawnWindow(source) {
+        if (!source) return;
+
+        // Validation for local files
+        if (source.startsWith("file://")) {
+            const path = source.substring(7);
+            Proc.runCommand("validate-image", ["file", "-b", path], function(stdout, exitCode) {
+                const output = stdout.toLowerCase();
+                if (exitCode !== 0 || output.includes("empty") || !output.includes("image data")) {
+                    ToastService.showError("Invalid or corrupted image file.");
+                    return;
+                }
+
+                // Check dimensions if possible (e.g., "1920 x 1080")
+                const dimMatch = stdout.match(/(\d+)\s*x\s*(\d+)/);
+                if (dimMatch) {
+                    const w = parseInt(dimMatch[1]);
+                    const h = parseInt(dimMatch[2]);
+                    const minSize = root.pluginData.minImageSize || 16;
+                    if (w < minSize || h < minSize) {
+                        ToastService.showError("Image is too small (" + w + "x" + h + "). Minimum: " + minSize + "px");
+                        return;
+                    }
+                }
+                
+                root._spawnWindow(source);
+            });
+        } else {
+            // For URLs, we trust the source for now
+            root._spawnWindow(source);
+        }
+    }
+
+    function _spawnWindow(source) {
         const url = Qt.resolvedUrl("FloatyWindow.qml");
         const component = Qt.createComponent(url);
 

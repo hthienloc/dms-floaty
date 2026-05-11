@@ -252,7 +252,7 @@ PluginSettings {
                     text: "bindings {\n    Print { spawn \"sh\" \"-c\" \"grim -g \\\"$(slurp)\\\" - | wl-copy && dms ipc call floaty floatFromClipboard\"; }\n}"
                     font.family: "Monospace"
                     font.pixelSize: 11
-                    color: Theme.surfaceVariantText
+                    color: Theme.surfaceText
                 }
             }
         }

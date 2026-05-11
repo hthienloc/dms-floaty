@@ -21,6 +21,27 @@ A minimalist reference image plugin for DankMaterialShell. Float images on top o
 - **Right Click Bar Icon**: Instant paste from clipboard.
 - **Left Click Bar Icon**: Open control menu (Popout).
 
+## IPC Commands
+Floaty exposes commands that you can bind to keyboard shortcuts in your window manager (e.g., Niri, Hyprland):
+
+```bash
+# Float current clipboard image
+dms ipc call floaty floatFromClipboard
+
+# Open file selector to float
+dms ipc call floaty selectFileAndFloat
+```
+
+### Example: Screenshot to Floaty (Niri)
+Add this to your `config.kdl` to automatically float a screenshot:
+```kdl
+bindings {
+    Print { 
+        spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy && dms ipc call floaty floatFromClipboard"; 
+    }
+}
+```
+
 ## Notes
 > [!WARNING]
 > **Touchpad Scaling**: Touchpad gestures (pinch and scroll) might vary in sensitivity across different Wayland compositors. Using a mouse scroll wheel provides the most consistent precision.

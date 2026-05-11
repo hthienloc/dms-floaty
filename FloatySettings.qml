@@ -231,6 +231,51 @@ PluginSettings {
                         color: Theme.secondary
                     }
                 }
+
+                Rectangle {
+                    width: parent.width
+                    height: cmdText3.implicitHeight + 16
+                    color: Theme.surfaceContainer
+                    radius: 4
+                    StyledText {
+                        id: cmdText3
+                        anchors.centerIn: parent
+                        text: "dms ipc call floaty closeAllWindows"
+                        font.family: "Monospace"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.secondary
+                    }
+                }
+
+                Rectangle {
+                    width: parent.width
+                    height: cmdText4.implicitHeight + 16
+                    color: Theme.surfaceContainer
+                    radius: 4
+                    StyledText {
+                        id: cmdText4
+                        anchors.centerIn: parent
+                        text: "dms ipc call floaty toggleMinimizeAll"
+                        font.family: "Monospace"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.secondary
+                    }
+                }
+
+                Rectangle {
+                    width: parent.width
+                    height: cmdText5.implicitHeight + 16
+                    color: Theme.surfaceContainer
+                    radius: 4
+                    StyledText {
+                        id: cmdText5
+                        anchors.centerIn: parent
+                        text: "dms ipc call floaty floatFromUrl \"URL\""
+                        font.family: "Monospace"
+                        font.pixelSize: Theme.fontSizeSmall
+                        color: Theme.secondary
+                    }
+                }
             }
 
             StyledText {

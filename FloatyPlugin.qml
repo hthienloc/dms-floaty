@@ -42,6 +42,11 @@ PluginComponent {
         root.floatFromClipboard();
     }
 
+    ipcCommands: ({
+        "floatFromClipboard": () => root.floatFromClipboard(),
+        "selectFileAndFloat": () => root.selectFileAndFloat()
+    })
+
     popoutContent: Component {
         PopoutComponent {
             id: popout
@@ -109,18 +114,18 @@ PluginComponent {
 
                             Row {
                                 spacing: Theme.spacingS
-                                DankIcon { name: "mouse"; size: 14; color: Theme.surfaceVariantText }
+                                DankIcon { name: "open_with"; size: 14; color: Theme.surfaceVariantText }
                                 StyledText { text: "Left Click + Drag: Move window"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
                             }
                             Row {
                                 spacing: Theme.spacingS
-                                DankIcon { name: "expand"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Scroll Wheel: Scale Image (Resize)"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                DankIcon { name: "aspect_ratio"; size: 14; color: Theme.surfaceVariantText }
+                                StyledText { text: "Scroll Wheel: Resize image"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
                             }
                             Row {
                                 spacing: Theme.spacingS
-                                DankIcon { name: "contract"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Right Click Image: Toggle Minimize"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                DankIcon { name: "minimize"; size: 14; color: Theme.surfaceVariantText }
+                                StyledText { text: "Right Click: Toggle minimize"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
                             }
                             Row {
                                 spacing: Theme.spacingS
@@ -129,8 +134,8 @@ PluginComponent {
                             }
                             Row {
                                 spacing: Theme.spacingS
-                                DankIcon { name: "bolt"; size: 14; color: Theme.primary }
-                                StyledText { text: "Right Click Icon: Fast Paste"; color: Theme.primary; font.pixelSize: Theme.fontSizeSmall }
+                                DankIcon { name: "bolt"; size: 14; color: Theme.surfaceVariantText }
+                                StyledText { text: "Right Click Icon: Fast paste"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
                             }
                         }
                     }

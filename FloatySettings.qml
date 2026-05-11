@@ -156,6 +156,13 @@ PluginSettings {
                 defaultValue: true
             }
 
+            ToggleSetting {
+                settingKey: "showUserGuide"
+                label: "Show User Guide"
+                description: "Display usage instructions in the popout."
+                defaultValue: true
+            }
+
             SliderSetting {
                 settingKey: "minimizeDelay"
                 label: "Minimize Delay"

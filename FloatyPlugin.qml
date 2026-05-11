@@ -15,6 +15,7 @@ PluginComponent {
     property var openWindows: []
 
     readonly property bool showBarPill: root.pluginData.showBarPill ?? true
+    readonly property bool showUserGuide: root.pluginData.showUserGuide ?? true
 
     // Bar Pill - Standardized with QR Generator Style
     horizontalBarPill: showBarPill ? horizontalPillComp : null
@@ -63,7 +64,7 @@ PluginComponent {
     }
 
     pillRightClickAction: function() {
-        root.floatFromClipboard();
+        root.smartPaste();
     }
 
     IpcHandler {
@@ -213,6 +214,7 @@ PluginComponent {
                     height: guideCol.height + Theme.spacingM * 2
                     color: Theme.surfaceContainerHigh
                     radius: Theme.cornerRadius
+                    visible: root.showUserGuide
                     
                     Column {
                         id: guideCol
@@ -255,7 +257,7 @@ PluginComponent {
                             Row {
                                 spacing: Theme.spacingS
                                 DankIcon { name: "bolt"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Right Click Icon: Fast paste"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                StyledText { text: "Right Click Icon: Fast paste image/link"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
                             }
                         }
                     }
@@ -265,18 +267,44 @@ PluginComponent {
     }
 
     function floatFromClipboard() {
+        root.smartPaste();
+    }
+
+    function smartPaste() {
         const timestamp = Date.now();
         const tempPath = "/tmp/dms_floaty_" + timestamp + ".png";
-        const cmd = "wl-paste -t image/png > " + tempPath + " || xclip -selection clipboard -t image/png -o > " + tempPath;
+        
+        // Smarter shell command to detect image or text (URL/Path)
+        const checkCmd = `
+            if wl-paste -t image/png > ${tempPath} 2>/dev/null || xclip -selection clipboard -t image/png -o > ${tempPath} 2>/dev/null; then
+                echo "IMAGE:${tempPath}"
+            else
+                TEXT=$(wl-paste -n 2>/dev/null || xclip -selection clipboard -o 2>/dev/null)
+                if [ -n "$TEXT" ]; then
+                    echo "TEXT:$TEXT"
+                else
+                    echo "EMPTY"
+                fi
+            fi
+        `;
 
         Proc.runCommand(
-            "save-clipboard",
-            ["sh", "-c", cmd],
+            "smart-paste",
+            ["sh", "-c", checkCmd],
             function(stdout, exitCode) {
-                if (exitCode === 0) {
-                    spawnWindow("file://" + tempPath);
+                const output = stdout.trim();
+                if (output.startsWith("IMAGE:")) {
+                    const path = output.substring(6);
+                    spawnWindow("file://" + path);
+                } else if (output.startsWith("TEXT:")) {
+                    const text = output.substring(5).trim();
+                    if (text.startsWith("http://") || text.startsWith("https://") || text.startsWith("/")) {
+                        spawnWindow(text.startsWith("/") ? "file://" + text : text);
+                    } else {
+                        ToastService.showError("Clipboard text is not a valid URL or path.");
+                    }
                 } else {
-                    ToastService.showError("No image in clipboard.");
+                    ToastService.showError("No valid image, URL, or path in clipboard.");
                 }
             },
             0

@@ -23,11 +23,19 @@ PluginComponent {
     Component {
         id: horizontalPillComp
         Row {
-            spacing: Theme.spacingS
+            spacing: Theme.spacingXS
             DankIcon {
                 name: "cloud"
                 size: Theme.iconSizeSmall
                 color: root.activeWindowCount > 0 ? Theme.primary : Theme.surfaceText
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            StyledText {
+                text: root.activeWindowCount
+                visible: root.activeWindowCount > 0
+                color: Theme.primary
+                font.pixelSize: Theme.fontSizeSmall
+                font.bold: true
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
@@ -36,11 +44,19 @@ PluginComponent {
     Component {
         id: verticalPillComp
         Column {
-            spacing: Theme.spacingS
+            spacing: 2
             DankIcon {
                 name: "cloud"
                 size: Theme.iconSizeSmall
                 color: root.activeWindowCount > 0 ? Theme.primary : Theme.surfaceText
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            StyledText {
+                text: root.activeWindowCount
+                visible: root.activeWindowCount > 0
+                color: Theme.primary
+                font.pixelSize: Theme.fontSizeSmall - 2
+                font.bold: true
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }

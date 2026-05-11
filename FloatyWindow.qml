@@ -290,8 +290,8 @@ radius: Theme.cornerRadius
                         target: container
                         property: "opacity"
                         to: 0
-                        duration: 100
-                        easing.type: Easing.OutCubic
+                        duration: 70
+                        easing.type: Easing.OutQuad
                     }
                     PropertyAction { 
                         targets: [window, container, img, cloudIcon]
@@ -301,8 +301,8 @@ radius: Theme.cornerRadius
                         target: container
                         property: "opacity"
                         to: 1
-                        duration: 100
-                        easing.type: Easing.InCubic
+                        duration: 80
+                        easing.type: Easing.InQuad
                     }
                 }
             },
@@ -313,8 +313,8 @@ radius: Theme.cornerRadius
                         target: container
                         property: "opacity"
                         to: 0
-                        duration: 100
-                        easing.type: Easing.OutCubic
+                        duration: 70
+                        easing.type: Easing.OutQuad
                     }
                     PropertyAction { 
                         targets: [window, container, img, cloudIcon]
@@ -324,8 +324,8 @@ radius: Theme.cornerRadius
                         target: container
                         property: "opacity"
                         to: 1
-                        duration: 100
-                        easing.type: Easing.InCubic
+                        duration: 80
+                        easing.type: Easing.InQuad
                     }
                 }
             }

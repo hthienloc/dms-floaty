@@ -35,14 +35,71 @@ PluginSettings {
                 color: Theme.surfaceText
             }
 
+            StyledText {
+                text: "Changes apply to newly created windows only."
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceVariantText
+            }
+
             SliderSetting {
                 settingKey: "initialScale"
-                label: "Initial Image Size"
+                label: "Initial Width"
                 description: "The width (px) of the image when first opened."
                 minimum: 100
                 maximum: 800
                 unit: "px"
                 defaultValue: 400
+            }
+
+            SliderSetting {
+                settingKey: "maxHeight"
+                label: "Max Height"
+                description: "Limit image height (px). 0 = no limit."
+                minimum: 0
+                maximum: 1000
+                unit: "px"
+                defaultValue: 0
+            }
+
+            SliderSetting {
+                settingKey: "borderWidth"
+                label: "Border Width"
+                description: "Thickness of the window border."
+                minimum: 0
+                maximum: 4
+                unit: "px"
+                defaultValue: 2
+            }
+
+            SelectionSetting {
+                settingKey: "borderColor"
+                label: "Border Color"
+                description: "Color of the window border."
+                options: [
+                    { label: "Default", value: "outlineVariant" },
+                    { label: "Primary", value: "primary" },
+                    { label: "Surface", value: "surfaceContainerHighest" },
+                    { label: "Transparent", value: "transparent" }
+                ]
+                defaultValue: "outlineVariant"
+            }
+
+            SelectionSetting {
+                settingKey: "spawnPosition"
+                label: "Spawn Position"
+                description: "Where new images appear on screen."
+                options: [
+                    { label: "Top Left", value: "top-left" },
+                    { label: "Top", value: "top" },
+                    { label: "Top Right", value: "top-right" },
+                    { label: "Left", value: "left" },
+                    { label: "Center", value: "center" },
+                    { label: "Right", value: "right" },
+                    { label: "Bottom Left", value: "bottom-left" },
+                    { label: "Bottom", value: "bottom" },
+                    { label: "Bottom Right", value: "bottom-right" }
+                ]
+                defaultValue: "bottom-left"
             }
         }
     }

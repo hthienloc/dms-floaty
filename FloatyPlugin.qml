@@ -13,10 +13,6 @@ PluginComponent {
     // Simple count is enough and more reliable for QML property binding
     property int activeWindowCount: 0
 
-    pillRightClickAction: () => {
-        root.floatFromClipboard();
-    }
-
     // Bar Pill - Standardized with QR Generator Style
     horizontalBarPill: Component {
         Row {
@@ -40,6 +36,10 @@ PluginComponent {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }
+    }
+
+    pillRightClickAction: function() {
+        root.floatFromClipboard();
     }
 
     popoutContent: Component {
@@ -119,13 +119,13 @@ PluginComponent {
                             }
                             Row {
                                 spacing: Theme.spacingS
-                                DankIcon { name: "close"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Right Click Image: Close window"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                DankIcon { name: "contract"; size: 14; color: Theme.surfaceVariantText }
+                                StyledText { text: "Right Click Image: Toggle Minimize"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
                             }
                             Row {
                                 spacing: Theme.spacingS
-                                DankIcon { name: "contract"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Middle Click: Toggle Minimize"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                DankIcon { name: "close"; size: 14; color: Theme.surfaceVariantText }
+                                StyledText { text: "Middle Click: Close window"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
                             }
                             Row {
                                 spacing: Theme.spacingS
@@ -147,7 +147,7 @@ PluginComponent {
         Proc.runCommand(
             "save-clipboard",
             ["sh", "-c", cmd],
-            (stdout, exitCode) => {
+            function(stdout, exitCode) {
                 if (exitCode === 0) {
                     spawnWindow("file://" + tempPath);
                 } else {
@@ -162,7 +162,7 @@ PluginComponent {
         Proc.runCommand(
             "select-file",
             ["kdialog", "--getopenfilename", ":", "Images (*.png *.jpg *.jpeg *.webp *.bmp)"],
-            (stdout, exitCode) => {
+            function(stdout, exitCode) {
                 const filePath = stdout.trim();
                 if (exitCode === 0 && filePath !== "") {
                     spawnWindow("file://" + filePath);
@@ -175,23 +175,21 @@ PluginComponent {
     function spawnWindow(source) {
         const url = Qt.resolvedUrl("FloatyWindow.qml");
         const component = Qt.createComponent(url);
-        
-        // Read the setting for initial scale (default 400 if not set)
-        const initialWidth = root.pluginService.loadPluginData("floaty", "initialScale", 400);
 
-        const createWin = () => {
+        const initialWidth = root.pluginService.loadPluginData("floaty", "initialScale", 400);
+        const spawnPosition = root.pluginService.loadPluginData("floaty", "spawnPosition", "center");
+
+        const createWin = function() {
             const win = component.createObject(root, {
                 imageSource: source,
-                xPos: 300 + (Math.random() * 200),
-                yPos: 300 + (Math.random() * 200),
+                spawnPosition: spawnPosition,
                 initialWidth: initialWidth,
                 pluginData: root.pluginData
             });
-            
+
             if (win !== null) {
                 root.activeWindowCount++;
-                
-                win.closing.connect(() => {
+                win.closing.connect(function() {
                     root.activeWindowCount--;
                 });
             } else {
@@ -204,7 +202,7 @@ PluginComponent {
         } else if (component.status === Component.Error) {
             console.error("Error loading window component:", component.errorString());
         } else {
-            component.statusChanged.connect(() => {
+            component.statusChanged.connect(function() {
                 if (component.status === Component.Ready) createWin();
             });
         }

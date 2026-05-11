@@ -21,10 +21,26 @@ PanelWindow {
     property var pluginData: ({})
     readonly property bool autoMinimize: pluginData.autoMinimize ?? false
     readonly property int minimizeDelay: pluginData.minimizeDelay ?? 3000
+    readonly property int borderWidth: pluginData.borderWidth ?? 2
+    readonly property string borderColor: pluginData.borderColor ?? "outlineVariant"
+    property string spawnPosition: "center"
+    property int maxHeight: 0
+
+    onPluginDataChanged: {
+        if (pluginData) {
+            spawnPosition = pluginData.spawnPosition || "center";
+            maxHeight = pluginData.maxHeight || 0;
+            updatePosition();
+        }
+    }
     
     property bool isMinimized: false
     property real targetWidth: initialWidth
-    property real targetHeight: 300
+    property real targetHeight: 1
+    property bool imageLoaded: false
+
+    onTargetWidthChanged: updatePosition()
+    onTargetHeightChanged: updatePosition()
 
     // Position control
     property int xPos: 400
@@ -38,13 +54,13 @@ PanelWindow {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
     
     WlrLayershell.margins {
-        left: window.xPos
-        top: window.yPos
+        left: xPos
+        top: yPos
     }
 
     // Dynamic width/height handled by states in container
-    width: targetWidth
-    height: targetHeight
+    implicitWidth: targetWidth
+    implicitHeight: targetHeight
 
     Timer {
         id: minimizeTimer
@@ -57,10 +73,30 @@ PanelWindow {
         if (window.autoMinimize) {
             minimizeTimer.start();
         }
+        updatePosition();
+    }
 
-        // Initial centering based on default size
-        window.xPos = (window.screen.width - window.width) / 2;
-        window.yPos = (window.screen.height - window.height) / 2;
+    function yPosForPosition(pos, winHeight, screenHeight) {
+        const padding = 8;
+        switch (pos) {
+            case "top": case "top-left": case "top-right": return padding;
+            case "bottom": case "bottom-left": case "bottom-right": return screenHeight - winHeight - padding;
+            default: return (screenHeight - winHeight) / 2;
+        }
+    }
+
+    function xPosForPosition(pos, winWidth, screenWidth) {
+        const padding = 8;
+        switch (pos) {
+            case "left": case "top-left": case "bottom-left": return padding;
+            case "right": case "top-right": case "bottom-right": return screenWidth - winWidth - padding;
+            default: return (screenWidth - winWidth) / 2;
+        }
+    }
+
+    function updatePosition() {
+        xPos = xPosForPosition(spawnPosition, targetWidth, window.screen.width);
+        yPos = yPosForPosition(spawnPosition, targetHeight, window.screen.height);
     }
 
     // The Drag Engine
@@ -75,12 +111,20 @@ PanelWindow {
     StyledRect {
         id: container
         anchors.fill: parent
-        radius: Theme.cornerRadius
+radius: Theme.cornerRadius
         color: Theme.surfaceContainer
-        border.color: Theme.outlineVariant
-        border.width: 1
+        border.color: window.borderColor === "primary" ? Theme.primary : 
+                      window.borderColor === "surfaceContainerHighest" ? Theme.surfaceContainerHighest :
+                      window.borderColor === "transparent" ? "transparent" : Theme.outlineVariant
+        border.width: window.borderWidth
         clip: true
         antialiasing: true
+
+        SequentialAnimation {
+            id: opacityToClose
+            NumberAnimation { target: container; property: "opacity"; to: 0; duration: 150; easing.type: Easing.OutCubic }
+            ScriptAction { script: { window.closing(); window.destroy(); } }
+        }
 
         // Image View - Fixed size inside container to prevent shrinking effect
         Image {
@@ -91,17 +135,20 @@ PanelWindow {
             anchors.centerIn: parent
             fillMode: Image.PreserveAspectFit
             asynchronous: true
-            opacity: 1
+            opacity: window.imageLoaded ? 1 : 0
             visible: opacity > 0
             
             onStatusChanged: {
                 if (status === Image.Ready) {
                     let ratio = implicitHeight / implicitWidth;
-                    window.targetHeight = window.targetWidth * ratio;
-
-                    // Final centering once dimensions are known
-                    window.xPos = (window.screen.width - window.targetWidth) / 2;
-                    window.yPos = (window.screen.height - window.targetHeight) / 2;
+                    let calcHeight = window.targetWidth * ratio;
+                    if (window.maxHeight > 0 && calcHeight > window.maxHeight) {
+                        window.targetHeight = window.maxHeight;
+                    } else {
+                        window.targetHeight = calcHeight;
+                    }
+                    window.imageLoaded = true;
+                    updatePosition();
                 }
             }
         }
@@ -156,12 +203,11 @@ PanelWindow {
                 }
             }
 
-            onPressed: (mouse) => {
+            onPressed: function(mouse) {
                 if (mouse.button === Qt.RightButton) {
-                    window.closing();
-                    window.destroy();
-                } else if (mouse.button === Qt.MiddleButton) {
                     window.isMinimized = !window.isMinimized;
+                } else if (mouse.button === Qt.MiddleButton) {
+                    opacityToClose.start();
                 }
             }
 
@@ -196,56 +242,56 @@ PanelWindow {
             Transition {
                 from: ""; to: "minimized"
                 ParallelAnimation {
-                    NumberAnimation { 
+                    NumberAnimation {
                         target: window; properties: "width,height"
-                        duration: Theme.variantDuration(100, false)
-                        easing.type: Easing.OutCubic 
+                        duration: 80
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Theme.expressiveCurves.emphasizedDecel
                     }
-                    NumberAnimation { 
+                    NumberAnimation {
                         target: container; properties: "radius"
-                        duration: Theme.variantDuration(100, false)
-                        easing.type: Easing.InOutQuad 
+                        duration: 80
+                        easing.type: Easing.OutCubic
                     }
-                    ColorAnimation { 
+                    ColorAnimation {
                         target: container
-                        duration: Theme.variantDuration(100, false) 
+                        duration: 80
                     }
-                    NumberAnimation { 
+                    NumberAnimation {
                         target: img; property: "opacity"
-                        duration: Theme.variantDuration(40, false) 
+                        duration: 40
                     }
-                    NumberAnimation { 
+                    NumberAnimation {
                         target: cloudIcon; property: "opacity"
-                        duration: Theme.variantDuration(40, false)
-                        easing.type: Easing.InQuad 
+                        duration: 40
                     }
                 }
             },
             Transition {
                 from: "minimized"; to: ""
                 ParallelAnimation {
-                    NumberAnimation { 
+                    NumberAnimation {
                         target: window; properties: "width,height"
-                        duration: Theme.variantDuration(Theme.expressiveDurations.normal, true)
-                        easing.type: Easing.Bezier; easing.bezierCurve: Theme.variantEnterCurve 
+                        duration: 120
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Theme.expressiveCurves.emphasized
                     }
-                    NumberAnimation { 
+                    NumberAnimation {
                         target: container; properties: "radius"
-                        duration: Theme.variantDuration(Theme.expressiveDurations.normal, true)
-                        easing.type: Easing.InOutQuad 
+                        duration: 120
+                        easing.type: Easing.OutCubic
                     }
-                    ColorAnimation { 
+                    ColorAnimation {
                         target: container
-                        duration: Theme.variantDuration(Theme.expressiveDurations.normal, true) 
+                        duration: 120
                     }
-                    NumberAnimation { 
+                    NumberAnimation {
                         target: img; property: "opacity"
-                        duration: Theme.variantDuration(Theme.expressiveDurations.normal, true)
-                        easing.type: Easing.InQuad 
+                        duration: 120
                     }
-                    NumberAnimation { 
+                    NumberAnimation {
                         target: cloudIcon; property: "opacity"
-                        duration: Theme.variantDuration(Theme.expressiveDurations.fast, true) 
+                        duration: 60
                     }
                 }
             }

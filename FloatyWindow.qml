@@ -288,28 +288,28 @@ radius: Theme.cornerRadius
                 SequentialAnimation {
                     NumberAnimation {
                         target: img; property: "opacity"
-                        duration: 80
+                        duration: 40
                         easing.type: Easing.OutCubic
                     }
                     ParallelAnimation {
                         NumberAnimation {
                             target: window; properties: "width,height"
-                            duration: 150
+                            duration: 75
                             easing.type: Easing.OutExpo
                         }
                         NumberAnimation {
                             target: container; properties: "radius"
-                            duration: 150
+                            duration: 75
                             easing.type: Easing.OutCubic
                         }
                         ColorAnimation {
                             target: container
-                            duration: 150
+                            duration: 75
                         }
                     }
                     NumberAnimation {
                         target: cloudIcon; property: "opacity"
-                        duration: 100
+                        duration: 50
                         easing.type: Easing.InCubic
                     }
                 }
@@ -319,28 +319,28 @@ radius: Theme.cornerRadius
                 SequentialAnimation {
                     NumberAnimation {
                         target: cloudIcon; property: "opacity"
-                        duration: 80
+                        duration: 40
                         easing.type: Easing.OutCubic
                     }
                     ParallelAnimation {
                         NumberAnimation {
                             target: window; properties: "width,height"
-                            duration: 200
+                            duration: 100
                             easing.type: Easing.OutExpo
                         }
                         NumberAnimation {
                             target: container; properties: "radius"
-                            duration: 200
+                            duration: 100
                             easing.type: Easing.OutCubic
                         }
                         ColorAnimation {
                             target: container
-                            duration: 200
+                            duration: 100
                         }
                     }
                     NumberAnimation {
                         target: img; property: "opacity"
-                        duration: 150
+                        duration: 75
                         easing.type: Easing.InCubic
                     }
                 }

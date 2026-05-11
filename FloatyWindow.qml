@@ -39,9 +39,10 @@ PanelWindow {
     property real targetWidth: initialWidth
     property real targetHeight: 1
     property bool imageLoaded: false
+    property bool manuallyMoved: false
 
-    onTargetWidthChanged: updatePosition()
-    onTargetHeightChanged: updatePosition()
+    onTargetWidthChanged: if (!manuallyMoved) updatePosition()
+    onTargetHeightChanged: if (!manuallyMoved) updatePosition()
 
     // Position control
     property int xPos: 400
@@ -105,8 +106,18 @@ PanelWindow {
         id: dragTarget
         x: window.xPos
         y: window.yPos
-        onXChanged: { if (dragArea.drag.active) window.xPos = x }
-        onYChanged: { if (dragArea.drag.active) window.yPos = y }
+        onXChanged: { 
+            if (dragArea.drag.active) {
+                window.xPos = x;
+                window.manuallyMoved = true;
+            }
+        }
+        onYChanged: { 
+            if (dragArea.drag.active) {
+                window.yPos = y;
+                window.manuallyMoved = true;
+            }
+        }
     }
 
     StyledRect {
@@ -160,7 +171,9 @@ radius: Theme.cornerRadius
                         window.targetHeight = calcHeight;
                     }
                     window.imageLoaded = true;
-                    updatePosition();
+                    if (!window.manuallyMoved) {
+                        updatePosition();
+                    }
                 }
             }
         }

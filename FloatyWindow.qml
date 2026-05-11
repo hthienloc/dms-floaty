@@ -31,7 +31,7 @@ PanelWindow {
         if (pluginData) {
             spawnPosition = pluginData.spawnPosition || "center";
             maxHeight = pluginData.maxHeight || 0;
-            updatePosition();
+            updateSize();
         }
     }
     
@@ -113,6 +113,30 @@ PanelWindow {
         yPos = newY;
     }
 
+    function updateSize() {
+        if (img.status !== Image.Ready) return;
+
+        let iw = img.implicitWidth;
+        let ih = img.implicitHeight;
+        if (iw <= 0 || ih <= 0) return;
+
+        let ratio = iw / ih;
+        let w = initialWidth;
+        let h = w / ratio;
+
+        if (maxHeight > 0 && h > maxHeight) {
+            h = maxHeight;
+            w = h * ratio;
+        }
+
+        targetWidth = w;
+        targetHeight = h;
+        
+        if (!manuallyMoved) {
+            updatePosition();
+        }
+    }
+
     // The Drag Engine
     Item {
         id: dragTarget
@@ -175,17 +199,8 @@ PanelWindow {
 
             onStatusChanged: {
                 if (status === Image.Ready) {
-                    let ratio = implicitHeight / implicitWidth;
-                    let calcHeight = window.targetWidth * ratio;
-                    if (window.maxHeight > 0 && calcHeight > window.maxHeight) {
-                        window.targetHeight = window.maxHeight;
-                    } else {
-                        window.targetHeight = calcHeight;
-                    }
+                    updateSize();
                     window.imageLoaded = true;
-                    if (!window.manuallyMoved) {
-                        updatePosition();
-                    }
                 }
             }
         }
@@ -210,10 +225,11 @@ PanelWindow {
                 if (active) startWidth = window.targetWidth;
             }
             onScaleChanged: {
+                if (img.implicitWidth <= 0 || img.implicitHeight <= 0) return;
                 let newWidth = Math.max(100, Math.min(2000, startWidth * scale));
-                let ratio = img.implicitHeight / img.implicitWidth;
+                let ratio = img.implicitWidth / img.implicitHeight;
                 window.targetWidth = newWidth;
-                window.targetHeight = newWidth * ratio;
+                window.targetHeight = newWidth / ratio;
             }
         }
 
@@ -249,14 +265,14 @@ PanelWindow {
             }
 
             onWheel: (wheel) => {
-                if (window.isMinimized) return;
+                if (window.isMinimized || img.implicitWidth <= 0 || img.implicitHeight <= 0) return;
 
                 let scaleFactor = Math.pow(1.1, wheel.angleDelta.y / 120.0);
                 let oldWidth = window.targetWidth;
                 let oldHeight = window.targetHeight;
                 let newWidth = Math.max(100, Math.min(2000, oldWidth * scaleFactor));
-                let ratio = img.implicitHeight / img.implicitWidth;
-                let newHeight = newWidth * ratio;
+                let ratio = img.implicitWidth / img.implicitHeight;
+                let newHeight = newWidth / ratio;
 
                 // Directional resize logic:
                 // We keep the corner closest to the screen edge fixed.

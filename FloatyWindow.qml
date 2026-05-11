@@ -97,8 +97,18 @@ PanelWindow {
     }
 
     function updatePosition() {
-        xPos = xPosForPosition(spawnPosition, targetWidth, window.screen.width);
-        yPos = yPosForPosition(spawnPosition, targetHeight, window.screen.height);
+        let newX = xPosForPosition(spawnPosition, targetWidth, window.screen.width);
+        let newY = yPosForPosition(spawnPosition, targetHeight, window.screen.height);
+        
+        if (window.isMinimized) {
+            let centerX = newX + targetWidth / 2;
+            let centerY = newY + targetHeight / 2;
+            if (centerX > window.screen.width / 2) newX += (targetWidth - 56);
+            if (centerY > window.screen.height / 2) newY += (targetHeight - 56);
+        }
+        
+        xPos = newX;
+        yPos = newY;
     }
 
     // The Drag Engine
@@ -293,6 +303,19 @@ radius: Theme.cornerRadius
                         duration: 70
                         easing.type: Easing.OutQuad
                     }
+                    ScriptAction {
+                        script: {
+                            let oldWidth = window.targetWidth;
+                            let oldHeight = window.targetHeight;
+                            let centerX = window.xPos + oldWidth / 2;
+                            let centerY = window.yPos + oldHeight / 2;
+                            let screenWidth = window.screen.width;
+                            let screenHeight = window.screen.height;
+
+                            if (centerX > screenWidth / 2) window.xPos += (oldWidth - 56);
+                            if (centerY > screenHeight / 2) window.yPos += (oldHeight - 56);
+                        }
+                    }
                     PropertyAction { 
                         targets: [window, container, img, cloudIcon]
                         properties: "width,height,radius,color,border.width,opacity"
@@ -315,6 +338,19 @@ radius: Theme.cornerRadius
                         to: 0
                         duration: 70
                         easing.type: Easing.OutQuad
+                    }
+                    ScriptAction {
+                        script: {
+                            let oldWidth = window.targetWidth;
+                            let oldHeight = window.targetHeight;
+                            let centerX = window.xPos + 28;
+                            let centerY = window.yPos + 28;
+                            let screenWidth = window.screen.width;
+                            let screenHeight = window.screen.height;
+
+                            if (centerX > screenWidth / 2) window.xPos -= (oldWidth - 56);
+                            if (centerY > screenHeight / 2) window.yPos -= (oldHeight - 56);
+                        }
                     }
                     PropertyAction { 
                         targets: [window, container, img, cloudIcon]

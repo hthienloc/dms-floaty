@@ -287,29 +287,21 @@ radius: Theme.cornerRadius
                 from: ""; to: "minimized"
                 SequentialAnimation {
                     NumberAnimation {
-                        target: img; property: "opacity"
-                        duration: 30
+                        target: container
+                        property: "opacity"
+                        to: 0
+                        duration: 100
                         easing.type: Easing.OutCubic
                     }
-                    ParallelAnimation {
-                        NumberAnimation {
-                            target: window; properties: "width,height"
-                            duration: 50
-                            easing.type: Easing.OutExpo
-                        }
-                        NumberAnimation {
-                            target: container; properties: "radius"
-                            duration: 50
-                            easing.type: Easing.OutCubic
-                        }
-                        ColorAnimation {
-                            target: container
-                            duration: 50
-                        }
+                    PropertyAction { 
+                        targets: [window, container, img, cloudIcon]
+                        properties: "width,height,radius,color,border.width,opacity"
                     }
                     NumberAnimation {
-                        target: cloudIcon; property: "opacity"
-                        duration: 40
+                        target: container
+                        property: "opacity"
+                        to: 1
+                        duration: 100
                         easing.type: Easing.InCubic
                     }
                 }
@@ -318,29 +310,21 @@ radius: Theme.cornerRadius
                 from: "minimized"; to: ""
                 SequentialAnimation {
                     NumberAnimation {
-                        target: cloudIcon; property: "opacity"
-                        duration: 30
+                        target: container
+                        property: "opacity"
+                        to: 0
+                        duration: 100
                         easing.type: Easing.OutCubic
                     }
-                    ParallelAnimation {
-                        NumberAnimation {
-                            target: window; properties: "width,height"
-                            duration: 70
-                            easing.type: Easing.OutExpo
-                        }
-                        NumberAnimation {
-                            target: container; properties: "radius"
-                            duration: 70
-                            easing.type: Easing.OutCubic
-                        }
-                        ColorAnimation {
-                            target: container
-                            duration: 70
-                        }
+                    PropertyAction { 
+                        targets: [window, container, img, cloudIcon]
+                        properties: "width,height,radius,color,border.width,opacity"
                     }
                     NumberAnimation {
-                        target: img; property: "opacity"
-                        duration: 50
+                        target: container
+                        property: "opacity"
+                        to: 1
+                        duration: 100
                         easing.type: Easing.InCubic
                     }
                 }

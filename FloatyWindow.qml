@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects as GE
 import Quickshell
 import Quickshell.Wayland
 import qs.Common
@@ -126,17 +127,28 @@ radius: Theme.cornerRadius
             ScriptAction { script: { window.closing(); window.destroy(); } }
         }
 
-        // Image View - Fixed size inside container to prevent shrinking effect
+        // Image View - Fills container and aligns with border
         Image {
             id: img
             source: window.imageSource
-            width: window.targetWidth - 10
-            height: window.targetHeight - 10
-            anchors.centerIn: parent
+            anchors.fill: parent
+            anchors.margins: window.borderWidth
             fillMode: Image.PreserveAspectFit
             asynchronous: true
+            antialiasing: true
             opacity: window.imageLoaded ? 1 : 0
             visible: opacity > 0
+
+            layer.enabled: true
+            layer.effect: GE.OpacityMask {
+                maskSource: Rectangle {
+                    width: img.width
+                    height: img.height
+                    radius: Math.max(0, Theme.cornerRadius - window.borderWidth)
+                    visible: false
+                    antialiasing: true
+                }
+            }
             
             onStatusChanged: {
                 if (status === Image.Ready) {

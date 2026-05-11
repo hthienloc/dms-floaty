@@ -80,7 +80,7 @@ PanelWindow {
     }
 
     function yPosForPosition(pos, winHeight, screenHeight) {
-        const padding = 12;
+        const padding = 8;
         switch (pos) {
             case "top": case "top-left": case "top-right": return padding;
             case "bottom": case "bottom-left": case "bottom-right": return screenHeight - winHeight - padding;
@@ -89,7 +89,7 @@ PanelWindow {
     }
 
     function xPosForPosition(pos, winWidth, screenWidth) {
-        const padding = 12;
+        const padding = 8;
         switch (pos) {
             case "left": case "top-left": case "bottom-left": return padding;
             case "right": case "top-right": case "bottom-right": return screenWidth - winWidth - padding;
@@ -111,7 +111,7 @@ PanelWindow {
         }
 
         if (avoidStacking && !manuallyMoved && plugin && plugin.openWindows) {
-            let padding = 12;
+            let padding = 8;
             let currentWindows = plugin.openWindows;
             let attempts = 0;
             let maxAttempts = 50; 
@@ -172,6 +172,11 @@ PanelWindow {
             if (centerY > window.screen.height / 2) newY += (targetHeight - minimizedSize);
         }
 
+
+        // Final safety clamp to ensure padding from all edges
+        let edgePadding = 8;
+        newX = Math.max(edgePadding, Math.min(window.screen.width - targetWidth - edgePadding, newX));
+        newY = Math.max(edgePadding, Math.min(window.screen.height - targetHeight - edgePadding, newY));
 
         xPos = newX;
         yPos = newY;

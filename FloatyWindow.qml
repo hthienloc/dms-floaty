@@ -356,6 +356,10 @@ PanelWindow {
                 if (status === Image.Ready) {
                     updateSize();
                     window.imageLoaded = true;
+                } else if (status === Image.Error) {
+                    ToastService.showError("Failed to load image: " + window.imageSource);
+                    window.closing();
+                    window.destroy();
                 }
             }
         }

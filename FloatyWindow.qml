@@ -239,15 +239,34 @@ radius: Theme.cornerRadius
             onWheel: (wheel) => {
                 if (window.isMinimized) return;
                 
-                // Use a more continuous scaling factor for touchpad precision
-                // 120 is the standard mouse wheel delta. 
-                // We use pow(1.1, delta/120) to make it smooth and match the 1.1/0.9 feeling for mice.
                 let scaleFactor = Math.pow(1.1, wheel.angleDelta.y / 120.0);
-                let newWidth = Math.max(100, Math.min(2000, window.targetWidth * scaleFactor));
+                let oldWidth = window.targetWidth;
+                let oldHeight = window.targetHeight;
+                let newWidth = Math.max(100, Math.min(2000, oldWidth * scaleFactor));
                 let ratio = img.implicitHeight / img.implicitWidth;
+                let newHeight = newWidth * ratio;
+
+                // Directional resize logic:
+                // We keep the corner closest to the screen edge fixed.
+                let centerX = window.xPos + oldWidth / 2;
+                let centerY = window.yPos + oldHeight / 2;
+                let screenWidth = window.screen.width;
+                let screenHeight = window.screen.height;
+
+                // Adjust X: if center is in right half, keep right edge fixed (move x left)
+                if (centerX > screenWidth / 2) {
+                    window.xPos -= (newWidth - oldWidth);
+                } 
+                // else: center is in left half, keep left edge fixed (do nothing to x)
+
+                // Adjust Y: if center is in bottom half, keep bottom edge fixed (move y up)
+                if (centerY > screenHeight / 2) {
+                    window.yPos -= (newHeight - oldHeight);
+                }
+                // else: center is in top half, keep top edge fixed (do nothing to y)
                 
                 window.targetWidth = newWidth;
-                window.targetHeight = newWidth * ratio;
+                window.targetHeight = newHeight;
             }
         }
 

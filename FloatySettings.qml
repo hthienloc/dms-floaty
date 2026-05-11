@@ -151,7 +151,7 @@ PluginSettings {
 
             ToggleSetting {
                 settingKey: "avoidStacking"
-                label: "Auto-Place Windows"
+                label: "Auto-Tiling Windows"
                 description: "Place new windows in empty spots instead of stacking."
                 defaultValue: true
             }

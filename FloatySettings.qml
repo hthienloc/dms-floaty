@@ -243,7 +243,7 @@ PluginSettings {
             Rectangle {
                 width: parent.width
                 height: niriExample.implicitHeight + 16
-                color: Theme.surfaceContainerLowest
+                color: Theme.surfaceContainer
                 radius: 4
                 StyledText {
                     id: niriExample
@@ -252,7 +252,7 @@ PluginSettings {
                     text: "bindings {\n    Print { spawn \"sh\" \"-c\" \"grim -g \\\"$(slurp)\\\" - | wl-copy && dms ipc call floaty floatFromClipboard\"; }\n}"
                     font.family: "Monospace"
                     font.pixelSize: 11
-                    color: Theme.surfaceText
+                    color: Theme.secondary
                 }
             }
         }

@@ -202,6 +202,8 @@ PluginComponent {
                     }
                 }
             }
+            
+            Column {
                 width: parent.width
                 spacing: Theme.spacingM
                 

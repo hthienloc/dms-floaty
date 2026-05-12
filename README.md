@@ -7,12 +7,14 @@ A powerful, feature-rich reference image utility for DankMaterialShell. Floaty l
 ## Features
 
 ### Core Workflow
+
 - **Float from Clipboard**: Instantly pin images from your clipboard.
 - **Select File**: Import and pin image files from your local folders.
 - **Drag & Drop Support**: Drag images from your browser or file manager directly onto the bar icon or popout menu to instantly pin them.
 - **Smart Bar Icon**: The pill icon changes to your accent color when images are active, providing visual feedback.
 
 ### Display & Layout
+
 - **Always on Top**: Images stay visible while you work, perfect for reference material.
 - **Intelligent Auto-Tiling**: Newly spawned windows automatically stack vertically without overlapping, respecting screen boundaries and user-defined padding.
 - **Smart Auto-Minimize**: Automatically shrinks to an icon when idle to save screen space, expanding back when hovered.
@@ -20,6 +22,7 @@ A powerful, feature-rich reference image utility for DankMaterialShell. Floaty l
 - **Drag & Move**: Reposition images anywhere on your screen.
 
 ### Format Support
+
 - **Multi-Format Native Support**: Handles **PNG**, **JPG/JPEG**, **WebP**, **BMP**, and **SVG** (Vector Graphics) natively.
 - **PDF Page Selection**: Choose specific pages from multi-page PDFs to use as references (converts selected page to a high-quality temporary PNG).
 

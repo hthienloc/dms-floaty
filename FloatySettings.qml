@@ -226,6 +226,8 @@ PluginSettings {
                         { text: "dms ipc call floaty selectFileAndFloat", label: "Select File and Float" },
                         { text: "dms ipc call floaty closeAllWindows", label: "Close All Windows" },
                         { text: "dms ipc call floaty toggleMinimizeAll", label: "Toggle Minimize All" },
+                        { text: "dms ipc call floaty minimizeAll", label: "Minimize All Windows" },
+                        { text: "dms ipc call floaty expandAll", label: "Expand All Windows" },
                         { text: "dms ipc call floaty floatFromUrl \"URL\"", label: "Float from URL/Path" },
                         { text: "grim -g \"$(slurp)\" - | wl-copy && dms ipc call floaty floatFromClipboard", label: "Screenshot and Float" }
                     ]

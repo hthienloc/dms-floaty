@@ -421,6 +421,18 @@ PluginComponent {
         });
     }
 
+    function minimizeAll() {
+        root.openWindows.forEach(win => {
+            win.isMinimized = true;
+        });
+    }
+
+    function expandAll() {
+        root.openWindows.forEach(win => {
+            win.isMinimized = false;
+        });
+    }
+
     function spawnWindow(source) {
         if (!source) return;
 

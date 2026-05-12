@@ -362,6 +362,11 @@ PluginComponent {
                                     DankIcon { name: "bolt"; size: 14; color: Theme.surfaceVariantText }
                                     StyledText { text: "Right Click Icon: Fast paste image/link"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
                                 }
+                                Row {
+                                    spacing: Theme.spacingS
+                                    DankIcon { name: "picture_as_pdf"; size: 14; color: Theme.surfaceVariantText }
+                                    StyledText { text: "PDF: Enter pages like 1, 1-3, or 1 3 5"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                }
                             }
                         }
                     }
@@ -469,8 +474,9 @@ PluginComponent {
                     let match = stdout.match(/Pages:\s+(\d+)/);
                     if (match) totalPages = parseInt(match[1]);
 
-                    const convert = function(page) {
-                        const tempBase = "/tmp/dms_floaty_pdf_" + Date.now();
+                    const convertPage = function(page, callback) {
+                        const timestamp = Date.now();
+                        const tempBase = "/tmp/dms_floaty_pdf_" + timestamp + "_" + page;
                         const tempPng = tempBase + ".png";
                         Proc.runCommand("pdf-convert", ["pdftocairo", "-png", "-singlefile", "-f", "" + page, "-l", "" + page, path, tempBase], function(stdout, exitCode) {
                             if (exitCode === 0) {
@@ -478,25 +484,60 @@ PluginComponent {
                             } else {
                                 ToastService.showError("Failed to convert PDF page " + page);
                             }
+                            if (callback) callback();
                         });
+                    };
+
+                    const parsePageSelection = function(input) {
+                        const pages = [];
+                        const parts = input.trim().split(/\s+/);
+                        
+                        for (let part of parts) {
+                            part = part.trim();
+                            if (!part) continue;
+                            
+                            if (part.includes("-")) {
+                                const range = part.split("-");
+                                if (range.length === 2) {
+                                    const start = parseInt(range[0]);
+                                    const end = parseInt(range[1]);
+                                    if (!isNaN(start) && !isNaN(end) && start <= end && start >= 1 && end <= totalPages) {
+                                        for (let i = start; i <= end; i++) {
+                                            pages.push(i);
+                                        }
+                                    }
+                                }
+                            } else {
+                                const page = parseInt(part);
+                                if (!isNaN(page) && page >= 1 && page <= totalPages && !pages.includes(page)) {
+                                    pages.push(page);
+                                }
+                            }
+                        }
+                        
+                        return pages.sort((a, b) => a - b);
                     };
 
                     if (totalPages > 1) {
                         inputModal.showWithOptions({
                             title: "Floaty PDF",
-                            message: "Select page to float (1-" + totalPages + "):",
+                            message: "Enter pages: single (1), range (1-3), or list (1 3 5)",
                             initialText: "1",
                             onConfirm: function(text) {
-                                let page = parseInt(text.trim());
-                                if (!isNaN(page) && page >= 1 && page <= totalPages) {
-                                    convert(page);
-                                } else {
-                                    ToastService.showError("Invalid page number.");
+                                const pages = parsePageSelection(text);
+                                if (pages.length === 0) {
+                                    ToastService.showError("Invalid page selection.");
+                                    return;
                                 }
+                                
+                                for (let i = 0; i < pages.length; i++) {
+                                    convertPage(pages[i], i === pages.length - 1 ? null : function() {});
+                                }
+                                ToastService.showInfo("Opening " + pages.length + " page(s)...");
                             }
                         });
                     } else {
-                        convert(1);
+                        convertPage(1);
                     }
                 });
                 return;

@@ -459,11 +459,16 @@ PluginComponent {
                     return;
                 }
 
-                // Check dimensions if possible (e.g., "1920 x 1080")
-                const dimMatch = stdout.match(/(\d+)\s*x\s*(\d+)/);
-                if (dimMatch) {
-                    const w = parseInt(dimMatch[1]);
-                    const h = parseInt(dimMatch[2]);
+                // Capture all occurrences and take the last one (prevents matching "density 1x1")
+                let w = 0, h = 0;
+                let re = /(\d+)\s*x\s*(\d+)/g;
+                let match;
+                while ((match = re.exec(stdout)) !== null) {
+                    w = parseInt(match[1]);
+                    h = parseInt(match[2]);
+                }
+
+                if (w > 0 && h > 0) {
                     const minSize = root.pluginData.minImageSize || 16;
                     if (w < minSize || h < minSize) {
                         ToastService.showError("Image is too small (" + w + "x" + h + "). Minimum: " + minSize + "px");

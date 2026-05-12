@@ -276,16 +276,20 @@ PanelWindow {
         if (iw <= 0 || ih <= 0) return;
 
         let ratio = iw / ih;
+        let b = window.borderWidth;
+        
+        // Calculate dimensions so the INNER area matches the aspect ratio
         let w = initialWidth;
-        let h = w / ratio;
+        let h = ((w - 2 * b) / ratio) + 2 * b;
 
         if (maxHeight > 0 && h > maxHeight) {
             h = maxHeight;
-            w = h * ratio;
+            w = (h - 2 * b) * ratio + 2 * b;
         }
 
-        targetWidth = w;
-        targetHeight = h;
+        // Use Math.round to avoid sub-pixel gaps that cause "black strips"
+        targetWidth = Math.round(w);
+        targetHeight = Math.round(h);
         
         if (!manuallyMoved) {
             updatePosition();
@@ -338,6 +342,8 @@ PanelWindow {
             fillMode: Image.PreserveAspectFit
             asynchronous: true
             antialiasing: true
+            smooth: true
+            mipmap: true
             opacity: window.imageLoaded ? 1 : 0
             visible: opacity > 0
 
@@ -385,10 +391,13 @@ PanelWindow {
             }
             onScaleChanged: {
                 if (img.implicitWidth <= 0 || img.implicitHeight <= 0) return;
-                let newWidth = Math.max(100, Math.min(2000, startWidth * scale));
+                let b = window.borderWidth;
                 let ratio = img.implicitWidth / img.implicitHeight;
-                window.targetWidth = newWidth;
-                window.targetHeight = newWidth / ratio;
+                let newWidth = Math.max(100, Math.min(2000, startWidth * scale));
+                let newHeight = ((newWidth - 2 * b) / ratio) + 2 * b;
+
+                window.targetWidth = Math.round(newWidth);
+                window.targetHeight = Math.round(newHeight);
             }
         }
 
@@ -429,9 +438,10 @@ PanelWindow {
                 let scaleFactor = Math.pow(1.1, wheel.angleDelta.y / 120.0);
                 let oldWidth = window.targetWidth;
                 let oldHeight = window.targetHeight;
-                let newWidth = Math.max(100, Math.min(2000, oldWidth * scaleFactor));
+                let b = window.borderWidth;
                 let ratio = img.implicitWidth / img.implicitHeight;
-                let newHeight = newWidth / ratio;
+                let newWidth = Math.round(Math.max(100, Math.min(2000, oldWidth * scaleFactor)));
+                let newHeight = Math.round(((newWidth - 2 * b) / ratio) + 2 * b);
 
                 // Directional resize logic:
                 // We keep the corner closest to the screen edge fixed.

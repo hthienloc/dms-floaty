@@ -158,9 +158,9 @@ PluginComponent {
             detailsText: "Reference images on top"
             showCloseButton: true
             
-            Column {
+            Item {
                 width: parent.width
-                spacing: Theme.spacingM
+                implicitHeight: mainCol.implicitHeight
 
                 DropArea {
                     anchors.fill: parent
@@ -173,157 +173,168 @@ PluginComponent {
                         root.closePopout();
                     }
                 }
-                
-                Row {
-                    width: parent.width
-                    spacing: Theme.spacingS
-                    
-                    DankButton {
-                        text: "Clipboard"
-                        width: (parent.width - Theme.spacingS) / 2
-                        iconName: "content_paste"
-                        backgroundColor: Theme.primaryContainer
-                        textColor: Theme.primary
-                        onClicked: {
-                            root.floatFromClipboard();
-                            root.closePopout();
-                        }
-                    }
-                    
-                    DankButton {
-                        text: "Select File"
-                        width: (parent.width - Theme.spacingS) / 2
-                        iconName: "folder_open"
-                        backgroundColor: Theme.surfaceContainerHighest
-                        textColor: Theme.surfaceText
-                        onClicked: {
-                            root.selectFileAndFloat();
-                            root.closePopout();
-                        }
-                    }
-                }
-
-                Row {
-                    width: parent.width
-                    spacing: Theme.spacingS
-                    visible: root.activeWindowCount > 0
-
-                    DankButton {
-                        text: "Toggle All"
-                        width: (parent.width - Theme.spacingS) / 2
-                        iconName: "unfold_more"
-                        backgroundColor: Theme.secondaryContainer
-                        textColor: Theme.secondary
-                        onClicked: {
-                            root.toggleMinimizeAll();
-                            root.closePopout();
-                        }
-                    }
-
-                    DankButton {
-                        text: "Close All"
-                        width: (parent.width - Theme.spacingS) / 2
-                        iconName: "delete_sweep"
-                        backgroundColor: Theme.errorContainer
-                        textColor: Theme.error
-                        onClicked: {
-                            root.closeAllWindows();
-                            root.closePopout();
-                        }
-                    }
-                }
 
                 Column {
+                    id: mainCol
                     width: parent.width
-                    spacing: Theme.spacingS
-                    
-                    StyledText {
-                        text: "Float from Link or Path"
-                        font.pixelSize: Theme.fontSizeSmall
-                        font.bold: true
-                        color: Theme.surfaceVariantText
-                    }
+                    spacing: Theme.spacingM
                     
                     Row {
                         width: parent.width
                         spacing: Theme.spacingS
                         
-                        DankTextField {
-                            id: urlInput
-                            width: parent.width - 44 - Theme.spacingS
-                            placeholderText: "https://... or /path/..."
-                            onAccepted: {
-                                if (text !== "") {
-                                    root.spawnWindow(text);
-                                    root.closePopout();
-                                }
+                        DankButton {
+                            text: "Clipboard"
+                            width: (parent.width - Theme.spacingS) / 2
+                            iconName: "content_paste"
+                            backgroundColor: Theme.primaryContainer
+                            textColor: Theme.primary
+                            onClicked: {
+                                root.floatFromClipboard();
+                                root.closePopout();
                             }
                         }
                         
                         DankButton {
-                            width: 44
-                            iconName: "add"
-                            backgroundColor: Theme.primaryContainer
-                            textColor: Theme.primary
+                            text: "Select File"
+                            width: (parent.width - Theme.spacingS) / 2
+                            iconName: "folder_open"
+                            backgroundColor: Theme.surfaceContainerHighest
+                            textColor: Theme.surfaceText
                             onClicked: {
-                                if (urlInput.text !== "") {
-                                    root.spawnWindow(urlInput.text);
-                                    root.closePopout();
+                                root.selectFileAndFloat();
+                                root.closePopout();
+                            }
+                        }
+                    }
+
+                    Row {
+                        width: parent.width
+                        spacing: Theme.spacingS
+                        visible: root.activeWindowCount > 0
+
+                        DankButton {
+                            text: "Toggle All"
+                            width: (parent.width - Theme.spacingS) / 2
+                            iconName: "unfold_more"
+                            backgroundColor: Theme.secondaryContainer
+                            textColor: Theme.secondary
+                            onClicked: {
+                                root.toggleMinimizeAll();
+                                root.closePopout();
+                            }
+                        }
+
+                        DankButton {
+                            text: "Close All"
+                            width: (parent.width - Theme.spacingS) / 2
+                            iconName: "delete_sweep"
+                            backgroundColor: Theme.errorContainer
+                            textColor: Theme.error
+                            onClicked: {
+                                root.closeAllWindows();
+                                root.closePopout();
+                            }
+                        }
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: Theme.spacingS
+                        
+                        StyledText {
+                            text: "Float from Link or Path"
+                            font.pixelSize: Theme.fontSizeSmall
+                            font.bold: true
+                            color: Theme.surfaceVariantText
+                        }
+                        
+                        Row {
+                            width: parent.width
+                            spacing: Theme.spacingS
+                            
+                            DankTextField {
+                                id: urlInput
+                                width: parent.width - 44 - Theme.spacingS
+                                placeholderText: "https://... or /path/..."
+                                onAccepted: {
+                                    if (text !== "") {
+                                        root.spawnWindow(text);
+                                        root.closePopout();
+                                    }
+                                }
+                            }
+                            
+                            DankButton {
+                                width: 44
+                                iconName: "add"
+                                backgroundColor: Theme.primaryContainer
+                                textColor: Theme.primary
+                                onClicked: {
+                                    if (urlInput.text !== "") {
+                                        root.spawnWindow(urlInput.text);
+                                        root.closePopout();
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                StyledRect {
-                    width: parent.width
-                    height: guideCol.height + Theme.spacingM * 2
-                    color: Theme.surfaceContainerHigh
-                    radius: Theme.cornerRadius
-                    visible: root.showUserGuide
-                    
-                    Column {
-                        id: guideCol
-                        anchors.centerIn: parent
-                        width: parent.width - Theme.spacingM * 2
-                        spacing: Theme.spacingS
-
-                        StyledText {
-                            text: "User Guide"
-                            font.pixelSize: Theme.fontSizeMedium
-                            font.bold: true
-                            color: Theme.primary
-                            anchors.horizontalCenter: parent.horizontalCenter
-                        }
+                    StyledRect {
+                        width: parent.width
+                        height: guideCol.implicitHeight + Theme.spacingL
+                        radius: Theme.cornerRadius
+                        color: Theme.surfaceContainerHighest
+                        visible: root.showUserGuide
 
                         Column {
-                            width: parent.width
-                            spacing: 8
+                            id: guideCol
+                            anchors.centerIn: parent
+                            width: parent.width - Theme.spacingM * 2
+                            spacing: Theme.spacingS
 
-                            Row {
-                                spacing: Theme.spacingS
-                                DankIcon { name: "open_with"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Left Click + Drag: Move window"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                            StyledText {
+                                text: "User Guide"
+                                font.pixelSize: Theme.fontSizeMedium
+                                font.bold: true
+                                color: Theme.primary
+                                anchors.horizontalCenter: parent.horizontalCenter
                             }
-                            Row {
-                                spacing: Theme.spacingS
-                                DankIcon { name: "aspect_ratio"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Scroll Wheel: Resize image"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                            }
-                            Row {
-                                spacing: Theme.spacingS
-                                DankIcon { name: "minimize"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Right Click: Toggle minimize"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                            }
-                            Row {
-                                spacing: Theme.spacingS
-                                DankIcon { name: "close"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Middle Click: Close window"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                            }
-                            Row {
-                                spacing: Theme.spacingS
-                                DankIcon { name: "bolt"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Right Click Icon: Fast paste image/link"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+
+                            Column {
+                                width: parent.width
+                                spacing: 8
+
+                                Row {
+                                    spacing: Theme.spacingS
+                                    DankIcon { name: "open_with"; size: 14; color: Theme.surfaceVariantText }
+                                    StyledText { text: "Left Click + Drag: Move window"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                }
+                                Row {
+                                    spacing: Theme.spacingS
+                                    DankIcon { name: "aspect_ratio"; size: 14; color: Theme.surfaceVariantText }
+                                    StyledText { text: "Scroll Wheel: Resize image"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                }
+                                Row {
+                                    spacing: Theme.spacingS
+                                    DankIcon { name: "minimize"; size: 14; color: Theme.surfaceVariantText }
+                                    StyledText { text: "Right Click: Toggle minimize"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                }
+                                Row {
+                                    spacing: Theme.spacingS
+                                    DankIcon { name: "close"; size: 14; color: Theme.surfaceVariantText }
+                                    StyledText { text: "Middle Click: Close window"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                }
+                                Row {
+                                    spacing: Theme.spacingS
+                                    DankIcon { name: "add_photo_alternate"; size: 14; color: Theme.surfaceVariantText }
+                                    StyledText { text: "Drop image/link: Quick float"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                }
+                                Row {
+                                    spacing: Theme.spacingS
+                                    DankIcon { name: "bolt"; size: 14; color: Theme.surfaceVariantText }
+                                    StyledText { text: "Right Click Icon: Fast paste image/link"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                }
                             }
                         }
                     }

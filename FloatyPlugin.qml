@@ -474,7 +474,7 @@ PluginComponent {
                     let match = stdout.match(/Pages:\s+(\d+)/);
                     if (match) totalPages = parseInt(match[1]);
 
-                    const convertPage = function(page, callback) {
+                    const convertPage = function(page) {
                         const timestamp = Date.now();
                         const tempBase = "/tmp/dms_floaty_pdf_" + timestamp + "_" + page;
                         const tempPng = tempBase + ".png";
@@ -484,7 +484,6 @@ PluginComponent {
                             } else {
                                 ToastService.showError("Failed to convert PDF page " + page);
                             }
-                            if (callback) callback();
                         });
                     };
 
@@ -530,10 +529,10 @@ PluginComponent {
                                     return;
                                 }
                                 
-                                for (let i = 0; i < pages.length; i++) {
-                                    convertPage(pages[i], i === pages.length - 1 ? null : function() {});
-                                }
                                 ToastService.showInfo("Opening " + pages.length + " page(s)...");
+                                pages.forEach(page => {
+                                    convertPage(page);
+                                });
                             }
                         });
                     } else {

@@ -401,7 +401,7 @@ PluginComponent {
     function selectFileAndFloat() {
         Proc.runCommand(
             "select-file",
-            ["kdialog", "--getopenfilename", ":", "Images (*.png *.jpg *.jpeg *.webp *.bmp *.svg)"],
+            ["kdialog", "--getopenfilename", ":", "Images and PDFs (*.png *.jpg *.jpeg *.webp *.bmp *.svg *.pdf)"],
             function(stdout, exitCode) {
                 const filePath = stdout.trim();
                 if (exitCode === 0 && filePath !== "") {
@@ -448,7 +448,23 @@ PluginComponent {
 
         // Validation for local files
         if (source.startsWith("file://")) {
-            const path = source.substring(7);
+            let path = source.substring(7);
+            
+            // Handle PDF conversion (Level 1: Page 1)
+            if (path.toLowerCase().endsWith(".pdf")) {
+                const tempBase = "/tmp/dms_floaty_pdf_" + Date.now();
+                const tempPng = tempBase + ".png";
+                
+                Proc.runCommand("pdf-convert", ["pdftocairo", "-png", "-singlefile", "-f", "1", "-l", "1", path, tempBase], function(stdout, exitCode) {
+                    if (exitCode === 0) {
+                        root._spawnWindow("file://" + tempPng);
+                    } else {
+                        ToastService.showError("Failed to convert PDF to image. Make sure poppler-utils is installed.");
+                    }
+                });
+                return;
+            }
+
             Proc.runCommand("validate-image", ["file", "-b", path], function(stdout, exitCode) {
                 const output = stdout.toLowerCase();
                 if (exitCode !== 0 || output.includes("empty") || !output.includes("image")) {

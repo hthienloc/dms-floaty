@@ -14,7 +14,7 @@ A powerful, feature-rich reference image utility for DankMaterialShell. Floaty l
 - **Intelligent Auto-Tiling**: Newly spawned images automatically stack vertically without overlapping, respecting screen boundaries and user-defined padding.
 - **Smart Bar Icon**: The pill icon changes to your accent color when images are active.
 - **Drag & Drop Support**: Drag images from your browser or file manager directly onto the bar icon or popout menu to instantly pin them.
-- **Supported Formats**: Native support for **PNG**, **JPG/JPEG**, **SVG**, **WebP**, and **BMP**.
+- **Supported Formats**: Native support for **PNG**, **JPG/JPEG**, **SVG**, **WebP**, **BMP**, and **PDF** (via auto-conversion).
 
 ## Controls
 - **Left Click + Drag**: Move the floating image.
@@ -82,6 +82,7 @@ grim -g "$(slurp)" - | wl-copy && dms ipc call floaty floatFromClipboard
 ## Requirements
 - `wl-paste` (Wayland) or `xclip` (X11) for clipboard support.
 - `kdialog` for file selection.
+- `poppler-utils` (specifically `pdftocairo`) for PDF support.
 
 ## Installation
 1. Clone this repository into `~/.config/DankMaterialShell/plugins/`:

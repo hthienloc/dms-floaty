@@ -401,7 +401,7 @@ PluginComponent {
     function selectFileAndFloat() {
         Proc.runCommand(
             "select-file",
-            ["kdialog", "--getopenfilename", ":", "Images (*.png *.jpg *.jpeg *.webp *.bmp)"],
+            ["kdialog", "--getopenfilename", ":", "Images (*.png *.jpg *.jpeg *.webp *.bmp *.svg)"],
             function(stdout, exitCode) {
                 const filePath = stdout.trim();
                 if (exitCode === 0 && filePath !== "") {
@@ -451,7 +451,7 @@ PluginComponent {
             const path = source.substring(7);
             Proc.runCommand("validate-image", ["file", "-b", path], function(stdout, exitCode) {
                 const output = stdout.toLowerCase();
-                if (exitCode !== 0 || output.includes("empty") || !output.includes("image data")) {
+                if (exitCode !== 0 || output.includes("empty") || !output.includes("image")) {
                     ToastService.showError("Invalid or corrupted image file.");
                     return;
                 }

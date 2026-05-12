@@ -2,7 +2,7 @@
     "id": "floaty",
     "name": "Floaty",
     "description": "A minimalist tool to float clipboard or local images on top of all windows.",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "author": "Loc Huynh",
     "icon": "cloud",
     "type": "widget",

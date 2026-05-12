@@ -158,54 +158,21 @@ PluginComponent {
             detailsText: "Reference images on top"
             showCloseButton: true
             
-            property bool draggingOver: false
-
-            DropArea {
-                anchors.fill: parent
-                onEntered: popout.draggingOver = true
-                onExited: popout.draggingOver = false
-                onDropped: (drop) => {
-                    popout.draggingOver = false;
-                    if (drop.hasUrls) {
-                        drop.urls.forEach(url => root.spawnWindow(url.toString()));
-                    } else if (drop.hasText) {
-                        root.spawnWindow(drop.text);
-                    }
-                    root.closePopout();
-                }
-            }
-
-            // Drag overlay
-            StyledRect {
-                anchors.fill: parent
-                anchors.margins: Theme.spacingS
-                color: Theme.withAlpha(Theme.primary, 0.9)
-                radius: Theme.cornerRadius
-                visible: popout.draggingOver
-                z: 100
-
-                Column {
-                    anchors.centerIn: parent
-                    spacing: Theme.spacingS
-                    DankIcon {
-                        name: "add_photo_alternate"
-                        size: 48
-                        color: Theme.onPrimary
-                        anchors.horizontalCenter: parent.horizontalCenter
-                    }
-                    StyledText {
-                        text: "Drop to Float"
-                        color: Theme.onPrimary
-                        font.bold: true
-                        font.pixelSize: Theme.fontSizeMedium
-                        anchors.horizontalCenter: parent.horizontalCenter
-                    }
-                }
-            }
-            
             Column {
                 width: parent.width
                 spacing: Theme.spacingM
+
+                DropArea {
+                    anchors.fill: parent
+                    onDropped: (drop) => {
+                        if (drop.hasUrls) {
+                            drop.urls.forEach(url => root.spawnWindow(url.toString()));
+                        } else if (drop.hasText) {
+                            root.spawnWindow(drop.text);
+                        }
+                        root.closePopout();
+                    }
+                }
                 
                 Row {
                     width: parent.width
@@ -355,13 +322,8 @@ PluginComponent {
                             }
                             Row {
                                 spacing: Theme.spacingS
-                                DankIcon { name: "add_photo_alternate"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Drop image/link: Quick float"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                            }
-                            Row {
-                                spacing: Theme.spacingS
                                 DankIcon { name: "bolt"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Right Click Icon: Fast paste"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                StyledText { text: "Right Click Icon: Fast paste image/link"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
                             }
                         }
                     }

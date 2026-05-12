@@ -13,14 +13,17 @@ A minimalist reference image plugin for DankMaterialShell. Float images on top o
 - **Drag & Move**: Reposition images anywhere on your screen.
 - **Intelligent Auto-Tiling**: Newly spawned images automatically stack vertically without overlapping, respecting screen boundaries and user-defined padding.
 - **Smart Bar Icon**: The pill icon changes to your accent color when images are active.
+- **Drag & Drop Support**: Drag images from your browser or file manager directly onto the bar icon or popout menu to instantly pin them.
 
 ## Controls
 - **Left Click + Drag**: Move the floating image.
 - **Scroll Wheel / Pinch Gesture**: Resize (Zoom) the image.
 - **Right Click**: Toggle minimized state (manual shrink/expand).
 - **Middle Click**: Close the image window.
-- **Right Click Bar Icon**: Instant paste from clipboard.
+- **Right Click Bar Icon**: Instant paste from clipboard or last URL.
 - **Left Click Bar Icon**: Open control menu (Popout).
+- **Drag onto Bar Icon**: Drop image/URL to float immediately.
+- **Drag onto Popout**: Drop image/URL anywhere on the popout menu to float.
 
 ## IPC Commands
 Floaty exposes commands that you can bind to keyboard shortcuts or use in scripts:

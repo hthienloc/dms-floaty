@@ -23,42 +23,96 @@ PluginComponent {
 
     Component {
         id: horizontalPillComp
-        Row {
-            spacing: Theme.spacingXS
-            DankIcon {
-                name: "cloud"
-                size: Theme.iconSizeSmall
-                color: root.activeWindowCount > 0 ? Theme.primary : Theme.surfaceText
+        Item {
+            implicitWidth: horizontalRow.implicitWidth
+            implicitHeight: 24 // Standard bar height container
+            anchors.verticalCenter: parent.verticalCenter
+            
+            property bool draggingOver: false
+
+            Row {
+                id: horizontalRow
+                spacing: Theme.spacingXS
                 anchors.verticalCenter: parent.verticalCenter
+                scale: draggingOver ? 1.2 : 1.0
+                Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+
+                DankIcon {
+                    name: "cloud"
+                    size: Theme.iconSizeSmall
+                    color: draggingOver ? Theme.primary : (root.activeWindowCount > 0 ? Theme.primary : Theme.surfaceText)
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                StyledText {
+                    text: root.activeWindowCount
+                    visible: root.activeWindowCount > 0
+                    color: Theme.primary
+                    font.pixelSize: Theme.fontSizeSmall
+                    font.bold: true
+                    anchors.verticalCenter: parent.verticalCenter
+                }
             }
-            StyledText {
-                text: root.activeWindowCount
-                visible: root.activeWindowCount > 0
-                color: Theme.primary
-                font.pixelSize: Theme.fontSizeSmall
-                font.bold: true
-                anchors.verticalCenter: parent.verticalCenter
+
+            DropArea {
+                anchors.fill: parent
+                onEntered: draggingOver = true
+                onExited: draggingOver = false
+                onDropped: (drop) => {
+                    draggingOver = false;
+                    if (drop.hasUrls) {
+                        drop.urls.forEach(url => root.spawnWindow(url.toString()));
+                    } else if (drop.hasText) {
+                        root.spawnWindow(drop.text);
+                    }
+                }
             }
         }
     }
 
     Component {
         id: verticalPillComp
-        Column {
-            spacing: 2
-            DankIcon {
-                name: "cloud"
-                size: Theme.iconSizeSmall
-                color: root.activeWindowCount > 0 ? Theme.primary : Theme.surfaceText
+        Item {
+            implicitWidth: 24
+            implicitHeight: verticalCol.implicitHeight
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            property bool draggingOver: false
+
+            Column {
+                id: verticalCol
+                spacing: 2
                 anchors.horizontalCenter: parent.horizontalCenter
+                scale: draggingOver ? 1.2 : 1.0
+                Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+
+                DankIcon {
+                    name: "cloud"
+                    size: Theme.iconSizeSmall
+                    color: draggingOver ? Theme.primary : (root.activeWindowCount > 0 ? Theme.primary : Theme.surfaceText)
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                StyledText {
+                    text: root.activeWindowCount
+                    visible: root.activeWindowCount > 0
+                    color: Theme.primary
+                    font.pixelSize: Theme.fontSizeSmall - 2
+                    font.bold: true
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
             }
-            StyledText {
-                text: root.activeWindowCount
-                visible: root.activeWindowCount > 0
-                color: Theme.primary
-                font.pixelSize: Theme.fontSizeSmall - 2
-                font.bold: true
-                anchors.horizontalCenter: parent.horizontalCenter
+
+            DropArea {
+                anchors.fill: parent
+                onEntered: draggingOver = true
+                onExited: draggingOver = false
+                onDropped: (drop) => {
+                    draggingOver = false;
+                    if (drop.hasUrls) {
+                        drop.urls.forEach(url => root.spawnWindow(url.toString()));
+                    } else if (drop.hasText) {
+                        root.spawnWindow(drop.text);
+                    }
+                }
             }
         }
     }
@@ -104,7 +158,50 @@ PluginComponent {
             detailsText: "Reference images on top"
             showCloseButton: true
             
-            Column {
+            property bool draggingOver: false
+
+            DropArea {
+                anchors.fill: parent
+                onEntered: popout.draggingOver = true
+                onExited: popout.draggingOver = false
+                onDropped: (drop) => {
+                    popout.draggingOver = false;
+                    if (drop.hasUrls) {
+                        drop.urls.forEach(url => root.spawnWindow(url.toString()));
+                    } else if (drop.hasText) {
+                        root.spawnWindow(drop.text);
+                    }
+                    root.closePopout();
+                }
+            }
+
+            // Drag overlay
+            StyledRect {
+                anchors.fill: parent
+                anchors.margins: Theme.spacingS
+                color: Theme.withAlpha(Theme.primary, 0.9)
+                radius: Theme.cornerRadius
+                visible: popout.draggingOver
+                z: 100
+
+                Column {
+                    anchors.centerIn: parent
+                    spacing: Theme.spacingS
+                    DankIcon {
+                        name: "add_photo_alternate"
+                        size: 48
+                        color: Theme.onPrimary
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                    StyledText {
+                        text: "Drop to Float"
+                        color: Theme.onPrimary
+                        font.bold: true
+                        font.pixelSize: Theme.fontSizeMedium
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                }
+            }
                 width: parent.width
                 spacing: Theme.spacingM
                 
@@ -256,8 +353,13 @@ PluginComponent {
                             }
                             Row {
                                 spacing: Theme.spacingS
+                                DankIcon { name: "add_photo_alternate"; size: 14; color: Theme.surfaceVariantText }
+                                StyledText { text: "Drop image/link: Quick float"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                            }
+                            Row {
+                                spacing: Theme.spacingS
                                 DankIcon { name: "bolt"; size: 14; color: Theme.surfaceVariantText }
-                                StyledText { text: "Right Click Icon: Fast paste image/link"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
+                                StyledText { text: "Right Click Icon: Fast paste"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
                             }
                         }
                     }

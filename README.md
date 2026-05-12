@@ -1,6 +1,6 @@
 # Floaty for DMS
 
-A minimalist reference image plugin for DankMaterialShell. Float images on top of your windows with ease.
+A powerful, feature-rich reference image utility for DankMaterialShell. Floaty lets you pin images, screenshots, and vector graphics on top of your workspace with intelligent layout, automatic scaling, and advanced IPC controls.
 
 ![Floaty Screenshot](screenshot.png)
 
@@ -14,6 +14,7 @@ A minimalist reference image plugin for DankMaterialShell. Float images on top o
 - **Intelligent Auto-Tiling**: Newly spawned images automatically stack vertically without overlapping, respecting screen boundaries and user-defined padding.
 - **Smart Bar Icon**: The pill icon changes to your accent color when images are active.
 - **Drag & Drop Support**: Drag images from your browser or file manager directly onto the bar icon or popout menu to instantly pin them.
+- **Supported Formats**: Native support for **PNG**, **JPG/JPEG**, **SVG**, **WebP**, and **BMP**.
 
 ## Controls
 - **Left Click + Drag**: Move the floating image.

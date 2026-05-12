@@ -6,6 +6,8 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 import qs.Modules.Plugins
+import qs.Modals.Common
+import qs.Modals.FileBrowser
 
 PluginComponent {
     id: root
@@ -119,6 +121,21 @@ PluginComponent {
 
     pillRightClickAction: function() {
         root.smartPaste();
+    }
+
+    FileBrowserModal {
+        id: fileBrowserModal
+        browserTitle: "Select Image or PDF"
+        browserIcon: "image"
+        fileExtensions: ["*.png", "*.jpg", "*.jpeg", "*.webp", "*.bmp", "*.svg", "*.pdf"]
+        onFileSelected: path => {
+            root.spawnWindow("file://" + path);
+            close();
+        }
+    }
+
+    InputModal {
+        id: inputModal
     }
 
     IpcHandler {
@@ -399,17 +416,7 @@ PluginComponent {
     }
 
     function selectFileAndFloat() {
-        Proc.runCommand(
-            "select-file",
-            ["kdialog", "--getopenfilename", ":", "Images and PDFs (*.png *.jpg *.jpeg *.webp *.bmp *.svg *.pdf)"],
-            function(stdout, exitCode) {
-                const filePath = stdout.trim();
-                if (exitCode === 0 && filePath !== "") {
-                    spawnWindow("file://" + filePath);
-                }
-            },
-            0
-        );
+        fileBrowserModal.open();
     }
 
     function closeAllWindows() {
@@ -475,10 +482,17 @@ PluginComponent {
                     };
 
                     if (totalPages > 1) {
-                        Proc.runCommand("page-input", ["kdialog", "--title", "Floaty PDF", "--inputbox", "Select page to float (1-" + totalPages + "):", "1"], function(stdout, exitCode) {
-                            let page = parseInt(stdout.trim());
-                            if (exitCode === 0 && !isNaN(page) && page >= 1 && page <= totalPages) {
-                                convert(page);
+                        inputModal.showWithOptions({
+                            title: "Floaty PDF",
+                            message: "Select page to float (1-" + totalPages + "):",
+                            initialText: "1",
+                            onConfirm: function(text) {
+                                let page = parseInt(text.trim());
+                                if (!isNaN(page) && page >= 1 && page <= totalPages) {
+                                    convert(page);
+                                } else {
+                                    ToastService.showError("Invalid page number.");
+                                }
                             }
                         });
                     } else {

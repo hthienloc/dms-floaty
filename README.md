@@ -100,7 +100,6 @@ grim -g "$(slurp)" - | wl-copy && dms ipc call floaty floatFromClipboard
 ## Requirements
 
 - `wl-paste` (Wayland) or `xclip` (X11) for clipboard support.
-- `kdialog` for file selection.
 - `poppler-utils` (specifically `pdftocairo` and `pdfinfo`) for PDF support.
 
 ## Installation

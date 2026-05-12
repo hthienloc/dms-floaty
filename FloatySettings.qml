@@ -222,14 +222,15 @@ PluginSettings {
 
                 Repeater {
                     model: [
+                        { text: "dms screenshot region --no-file --no-notify && dms ipc call floaty floatFromClipboard", label: "Screenshot Region and Float" },
+                        { text: "dms screenshot full --no-file --no-notify && dms ipc call floaty floatFromClipboard", label: "Screenshot Full Screen and Float" },
                         { text: "dms ipc call floaty floatFromClipboard", label: "Float from Clipboard" },
                         { text: "dms ipc call floaty selectFileAndFloat", label: "Select File and Float" },
                         { text: "dms ipc call floaty closeAllWindows", label: "Close All Windows" },
                         { text: "dms ipc call floaty toggleMinimizeAll", label: "Toggle Minimize All" },
                         { text: "dms ipc call floaty minimizeAll", label: "Minimize All Windows" },
                         { text: "dms ipc call floaty expandAll", label: "Expand All Windows" },
-                        { text: "dms ipc call floaty floatFromUrl \"URL\"", label: "Float from URL/Path" },
-                        { text: "grim -g \"$(slurp)\" - | wl-copy && dms ipc call floaty floatFromClipboard", label: "Screenshot and Float" }
+                        { text: "dms ipc call floaty floatFromUrl \"URL\"", label: "Float from URL/Path" }
                     ]
                     
                     delegate: Column {
@@ -304,7 +305,7 @@ PluginSettings {
                     StyledText {
                         id: niriExample
                         width: parent.width - 32
-                        text: "bindings {\n    Print { spawn \"sh\" \"-c\" \"grim -g \\\"$(slurp)\\\" - | wl-copy && dms ipc call floaty floatFromClipboard\"; }\n}"
+                        text: "bindings {\n    Print { spawn \"sh\" \"-c\" \"dms screenshot region --no-file --no-notify && dms ipc call floaty floatFromClipboard\"; }\n}"
                         font.family: "Monospace"
                         font.pixelSize: Theme.fontSizeSmall
                         color: Theme.secondary

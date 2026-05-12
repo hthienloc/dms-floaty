@@ -66,7 +66,7 @@ dms ipc call floaty floatFromUrl "file:///path/to/image.png"
 
 ### Example: Screenshot to Floaty
 
-You can combine these commands with tools like `grim` and `slurp` for a seamless screenshot workflow.
+Use DMS built-in screenshot command for a seamless workflow.
 
 #### Option 1: Window Manager Binding (e.g., Niri)
 
@@ -75,7 +75,7 @@ Add this to your `config.kdl`:
 ```kdl
 bindings {
     Print { 
-        spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy && dms ipc call floaty floatFromClipboard"; 
+        spawn "sh" "-c" "dms screenshot region --no-file --no-notify && dms ipc call floaty floatFromClipboard"; 
     }
 }
 ```
@@ -89,7 +89,13 @@ You can also bind the command directly in DMS Settings:
 Command to use:
 
 ```bash
-grim -g "$(slurp)" - | wl-copy && dms ipc call floaty floatFromClipboard
+dms screenshot region --no-file --no-notify && dms ipc call floaty floatFromClipboard
+```
+
+Or for full screen:
+
+```bash
+dms screenshot full --no-file --no-notify && dms ipc call floaty floatFromClipboard
 ```
 
 ## Notes
@@ -99,7 +105,7 @@ grim -g "$(slurp)" - | wl-copy && dms ipc call floaty floatFromClipboard
 
 ## Requirements
 
-- `wl-paste` (Wayland) or `xclip` (X11) for clipboard support.
+- DMS clipboard support (built-in with DMS)
 - `poppler-utils` (specifically `pdftocairo` and `pdfinfo`) for PDF support.
 
 ## Installation

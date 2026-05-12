@@ -148,6 +148,16 @@ PluginComponent {
             root.toggleMinimizeAll();
             return "SUCCESS";
         }
+
+        function minimizeAll(): string {
+            root.minimizeAll();
+            return "SUCCESS";
+        }
+
+        function expandAll(): string {
+            root.expandAll();
+            return "SUCCESS";
+        }
     }
 
     popoutContent: Component {

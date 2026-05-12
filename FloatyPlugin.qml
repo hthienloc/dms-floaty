@@ -474,19 +474,6 @@ PluginComponent {
                     let match = stdout.match(/Pages:\s+(\d+)/);
                     if (match) totalPages = parseInt(match[1]);
 
-                    const convertPage = function(page) {
-                        const timestamp = Date.now();
-                        const tempBase = "/tmp/dms_floaty_pdf_" + timestamp + "_" + page;
-                        const tempPng = tempBase + ".png";
-                        Proc.runCommand("pdf-convert", ["pdftocairo", "-png", "-singlefile", "-f", "" + page, "-l", "" + page, path, tempBase], function(stdout, exitCode) {
-                            if (exitCode === 0) {
-                                root._spawnWindow("file://" + tempPng);
-                            } else {
-                                ToastService.showError("Failed to convert PDF page " + page);
-                            }
-                        });
-                    };
-
                     const parsePageSelection = function(input) {
                         const pages = [];
                         const parts = input.trim().split(/\s+/);
@@ -494,7 +481,7 @@ PluginComponent {
                         for (let part of parts) {
                             part = part.trim();
                             if (!part) continue;
-                            
+
                             if (part.includes("-")) {
                                 const range = part.split("-");
                                 if (range.length === 2) {
@@ -517,6 +504,28 @@ PluginComponent {
                         return pages.sort((a, b) => a - b);
                     };
 
+                    const convertPagesSequentially = function(pages, index) {
+                        if (index >= pages.length) return;
+                        
+                        const page = pages[index];
+                        const timestamp = Date.now();
+                        const tempBase = "/tmp/dms_floaty_pdf_" + timestamp + "_" + page;
+                        const tempPng = tempBase + ".png";
+                        
+                        Proc.runCommand("pdf-convert", ["pdftocairo", "-png", "-singlefile", "-f", "" + page, "-l", "" + page, path, tempBase], function(stdout, exitCode) {
+                            if (exitCode === 0) {
+                                root._spawnWindow("file://" + tempPng);
+                            } else {
+                                ToastService.showError("Failed to convert PDF page " + page);
+                            }
+                            if (index < pages.length - 1) {
+                                Qt.callLater(function() {
+                                    convertPagesSequentially(pages, index + 1);
+                                });
+                            }
+                        });
+                    };
+
                     if (totalPages > 1) {
                         inputModal.showWithOptions({
                             title: "Floaty PDF",
@@ -530,13 +539,20 @@ PluginComponent {
                                 }
                                 
                                 ToastService.showInfo("Opening " + pages.length + " page(s)...");
-                                pages.forEach(page => {
-                                    convertPage(page);
-                                });
+                                convertPagesSequentially(pages, 0);
                             }
                         });
                     } else {
-                        convertPage(1);
+                        const timestamp = Date.now();
+                        const tempBase = "/tmp/dms_floaty_pdf_" + timestamp + "_1";
+                        const tempPng = tempBase + ".png";
+                        Proc.runCommand("pdf-convert", ["pdftocairo", "-png", "-singlefile", "-f", "1", "-l", "1", path, tempBase], function(stdout, exitCode) {
+                            if (exitCode === 0) {
+                                root._spawnWindow("file://" + tempPng);
+                            } else {
+                                ToastService.showError("Failed to convert PDF page 1");
+                            }
+                        });
                     }
                 });
                 return;

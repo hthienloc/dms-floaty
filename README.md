@@ -12,6 +12,7 @@ A powerful, feature-rich reference image utility for DankMaterialShell. Floaty l
 - **Dynamic Resizing**: Scale images using your mouse wheel.
 - **Drag & Move**: Reposition images anywhere on your screen.
 - **Intelligent Auto-Tiling**: Newly spawned images automatically stack vertically without overlapping, respecting screen boundaries and user-defined padding.
+- **PDF Page Selection**: Choose specific pages from multi-page PDFs to use as references.
 - **Smart Bar Icon**: The pill icon changes to your accent color when images are active.
 - **Drag & Drop Support**: Drag images from your browser or file manager directly onto the bar icon or popout menu to instantly pin them.
 - **Supported Formats**: Native support for **PNG**, **JPG/JPEG**, **SVG**, **WebP**, **BMP**, and **PDF** (via auto-conversion).

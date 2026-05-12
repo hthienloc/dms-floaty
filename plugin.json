@@ -2,7 +2,7 @@
     "id": "floaty",
     "name": "Floaty",
     "description": "A feature-rich reference image tool to float images, screenshots, and vector graphics on top of all windows.",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "author": "Loc Huynh",
     "icon": "cloud",
     "type": "widget",

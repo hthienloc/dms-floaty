@@ -450,16 +450,39 @@ PluginComponent {
         if (source.startsWith("file://")) {
             let path = source.substring(7);
             
-            // Handle PDF conversion (Level 1: Page 1)
+            // Handle PDF conversion (Level 2: Page Selection)
             if (path.toLowerCase().endsWith(".pdf")) {
-                const tempBase = "/tmp/dms_floaty_pdf_" + Date.now();
-                const tempPng = tempBase + ".png";
-                
-                Proc.runCommand("pdf-convert", ["pdftocairo", "-png", "-singlefile", "-f", "1", "-l", "1", path, tempBase], function(stdout, exitCode) {
-                    if (exitCode === 0) {
-                        root._spawnWindow("file://" + tempPng);
+                Proc.runCommand("pdf-info", ["pdfinfo", path], function(stdout, exitCode) {
+                    if (exitCode !== 0) {
+                        ToastService.showError("Failed to read PDF info. Make sure poppler-utils is installed.");
+                        return;
+                    }
+                    
+                    let totalPages = 1;
+                    let match = stdout.match(/Pages:\s+(\d+)/);
+                    if (match) totalPages = parseInt(match[1]);
+
+                    const convert = function(page) {
+                        const tempBase = "/tmp/dms_floaty_pdf_" + Date.now();
+                        const tempPng = tempBase + ".png";
+                        Proc.runCommand("pdf-convert", ["pdftocairo", "-png", "-singlefile", "-f", "" + page, "-l", "" + page, path, tempBase], function(stdout, exitCode) {
+                            if (exitCode === 0) {
+                                root._spawnWindow("file://" + tempPng);
+                            } else {
+                                ToastService.showError("Failed to convert PDF page " + page);
+                            }
+                        });
+                    };
+
+                    if (totalPages > 1) {
+                        Proc.runCommand("page-input", ["kdialog", "--title", "Floaty PDF", "--inputbox", "Select page to float (1-" + totalPages + "):", "1"], function(stdout, exitCode) {
+                            let page = parseInt(stdout.trim());
+                            if (exitCode === 0 && !isNaN(page) && page >= 1 && page <= totalPages) {
+                                convert(page);
+                            }
+                        });
                     } else {
-                        ToastService.showError("Failed to convert PDF to image. Make sure poppler-utils is installed.");
+                        convert(1);
                     }
                 });
                 return;

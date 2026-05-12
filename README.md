@@ -106,10 +106,13 @@ grim -g "$(slurp)" - | wl-copy && dms ipc call floaty floatFromClipboard
 ## Installation
 
 1. Clone this repository into `~/.config/DankMaterialShell/plugins/`:
+
    ```bash
    git clone https://github.com/hthienloc/dms-floaty floaty
    ```
+
 2. Reload DMS or use the IPC command:
+
    ```bash
    dms ipc plugins reload floaty
    ```

@@ -420,6 +420,15 @@ PluginComponent {
         );
     }
 
+    function raiseWindow(win) {
+        if (!win) return;
+        root.openWindows.forEach(w => {
+            if (w && typeof w.isTop !== 'undefined') {
+                w.isTop = (w === win);
+            }
+        });
+    }
+
     function selectFileAndFloat() {
         fileBrowserModal.open();
     }
@@ -609,6 +618,7 @@ PluginComponent {
             if (win !== null) {
                 root.activeWindowCount++;
                 root.openWindows = [...root.openWindows, win];
+                root.raiseWindow(win);
 
                 win.closing.connect(function() {
                     root.activeWindowCount--;

@@ -43,6 +43,7 @@ PanelWindow {
     property real targetHeight: 1
     property bool imageLoaded: false
     property bool manuallyMoved: false
+    property bool isTop: false
 
     onTargetWidthChanged: if (!manuallyMoved) updatePosition()
     onTargetHeightChanged: if (!manuallyMoved) updatePosition()
@@ -54,7 +55,12 @@ PanelWindow {
     // Quickshell LayerShell Configuration
     anchors { top: true; left: true }
     WlrLayershell.namespace: "dms-floaty"
-    WlrLayershell.layer: window.isPinned ? WlrLayershell.Overlay : WlrLayershell.Bottom
+    WlrLayershell.layer: {
+        if (window.isPinned) {
+            return isTop ? WlrLayershell.Overlay : WlrLayershell.Top;
+        }
+        return isTop ? WlrLayershell.Bottom : WlrLayershell.Background;
+    }
     WlrLayershell.exclusiveZone: -1
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
     
@@ -425,6 +431,9 @@ PanelWindow {
             }
 
             onPressed: function(mouse) {
+                if (window.plugin && typeof window.plugin.raiseWindow === "function") {
+                    window.plugin.raiseWindow(window);
+                }
                 if (mouse.button === Qt.RightButton) {
                     window.isMinimized = !window.isMinimized;
                 } else if (mouse.button === Qt.MiddleButton) {

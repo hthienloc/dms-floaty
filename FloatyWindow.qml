@@ -52,7 +52,6 @@ PanelWindow {
     property int xPos: 400
     property int yPos: 400
 
-    // Quickshell LayerShell Configuration
     anchors { top: true; left: true }
     WlrLayershell.namespace: "dms-floaty"
     WlrLayershell.layer: {
@@ -197,8 +196,6 @@ PanelWindow {
         let newX = xPosForPosition(spawnPosition, targetWidth, workArea);
         let newY = yPosForPosition(spawnPosition, targetHeight, workArea);
 
-
-
         let autoTiling = true;
         if (plugin && plugin.pluginData && plugin.pluginData.autoTiling !== undefined) {
             autoTiling = plugin.pluginData.autoTiling;
@@ -265,8 +262,6 @@ PanelWindow {
             if (centerY > window.screen.height / 2) newY += (targetHeight - minimizedSize);
         }
 
-
-        // Final safety clamp to ensure padding from all edges and respect workArea
         newX = Math.max(workArea.x + edgeSpacing, Math.min(workArea.x + workArea.width - targetWidth - edgeSpacing, newX));
         newY = Math.max(workArea.y + edgeSpacing, Math.min(workArea.y + workArea.height - targetHeight - edgeSpacing, newY));
 

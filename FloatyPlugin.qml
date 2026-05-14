@@ -12,7 +12,6 @@ import qs.Modals.FileBrowser
 PluginComponent {
     id: root
 
-    // Simple count is enough and more reliable for QML property binding
     property int activeWindowCount: 0
     property var openWindows: []
 

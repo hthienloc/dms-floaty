@@ -36,8 +36,32 @@ git clone https://github.com/hthienloc/dms-floaty ~/.config/DankMaterialShell/pl
 ## IPC Commands
 
 ```bash
+# Float from clipboard
 dms ipc call floaty floatFromClipboard
+
+# Open file selector
+dms ipc call floaty selectFileAndFloat
+
+# Close all windows
 dms ipc call floaty closeAllWindows
+
+# Toggle minimize/expand all
+dms ipc call floaty toggleMinimizeAll
+dms ipc call floaty minimizeAll
+dms ipc call floaty expandAll
+
+# Float from URL or path
+dms ipc call floaty floatFromUrl "file:///path/to/image.png"
+```
+
+### Example: Screenshot to Floaty
+
+Bind to your window manager (e.g., Niri):
+
+```kdl
+bindings {
+    Print { spawn "sh" "-c" "dms screenshot region --no-file --no-notify && dms ipc call floaty floatFromClipboard"; }
+}
 ```
 
 ## Requirements

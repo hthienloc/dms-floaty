@@ -6,7 +6,7 @@ Pin reference images, screenshots, and PDFs on top of your workspace.
 
 ## Install
 
-[<kbd>Install Now</kbd>](dms://plugin/install/floaty)
+[**Install Now**](dms://plugin/install/floaty)
 
 Or manually:
 ```bash

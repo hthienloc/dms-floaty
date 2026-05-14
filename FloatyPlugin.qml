@@ -26,7 +26,7 @@ PluginComponent {
         id: horizontalPillComp
         Item {
             implicitWidth: horizontalRow.implicitWidth
-            implicitHeight: 24 // Standard bar height container
+            implicitHeight: Theme.iconSize
             anchors.verticalCenter: parent.verticalCenter
             
             property bool draggingOver: false
@@ -73,7 +73,7 @@ PluginComponent {
     Component {
         id: verticalPillComp
         Item {
-            implicitWidth: 24
+            implicitWidth: Theme.iconSize
             implicitHeight: verticalCol.implicitHeight
             anchors.horizontalCenter: parent.horizontalCenter
 

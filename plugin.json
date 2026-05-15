@@ -1,18 +1,20 @@
 {
-    "id": "floaty",
-    "name": "Floaty",
-    "description": "A feature-rich reference image tool to float images, screenshots, and vector graphics on top of all windows.",
-    "version": "1.5.0",
-    "author": "Loc Huynh",
-    "icon": "cloud",
-    "type": "widget",
-    "capabilities": ["dankbar-widget"],
-    "component": "./FloatyPlugin.qml",
-    "settings": "./FloatySettings.qml",
-    "permissions": [
-        "settings_read",
-        "settings_write",
-        "process",
-        "clipboard_read"
-    ]
+  "id": "floaty",
+  "name": "Floaty",
+  "description": "A feature-rich reference image tool to float images, screenshots, and vector graphics on top of all windows.",
+  "version": "1.5.1",
+  "author": "Loc Huynh",
+  "icon": "cloud",
+  "type": "widget",
+  "capabilities": [
+    "dankbar-widget"
+  ],
+  "component": "./FloatyPlugin.qml",
+  "settings": "./FloatySettings.qml",
+  "permissions": [
+    "settings_read",
+    "settings_write",
+    "process",
+    "clipboard_read"
+  ]
 }

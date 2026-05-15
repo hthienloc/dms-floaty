@@ -6,7 +6,14 @@ Pin reference images, screenshots, and PDFs on top of your workspace.
 
 ## Install
 
-```
+
+**Required:** This plugin requires [dms-common](https://github.com/hthienloc/dms-common) to be installed.
+
+```bash
+# 1. Install shared components
+git clone https://github.com/hthienloc/dms-common ~/.config/DankMaterialShell/plugins/dms-common
+
+# 2. Install this plugin
 dms://plugin/install/floaty
 ```
 
@@ -70,6 +77,4 @@ bindings {
 
 ## License
 
-MIT
-## Dependencies
-- Requires [dms-common](https://github.com/hthienloc/dms-common) to be installed in the plugins directory.
+MIT(https://github.com/hthienloc/dms-common) to be installed in the plugins directory.

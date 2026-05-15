@@ -8,7 +8,7 @@ import qs.Widgets
 import qs.Modules.Plugins
 import qs.Modals.Common
 import qs.Modals.FileBrowser
-import "./components"
+import "../dms-common"
 
 PluginComponent {
     id: root

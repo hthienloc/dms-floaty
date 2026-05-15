@@ -335,16 +335,15 @@ PanelWindow {
         }
 
         // Image View - Fills container and aligns with border
-        Image {
+        AnimatedImage {
             id: img
             source: window.imageSource
             anchors.fill: parent
             anchors.margins: window.borderWidth
             fillMode: Image.PreserveAspectFit
-            asynchronous: true
+            paused: window.isMinimized
             antialiasing: true
             smooth: true
-            mipmap: true
             opacity: window.imageLoaded ? 1 : 0
             visible: opacity > 0
 
@@ -360,10 +359,10 @@ PanelWindow {
             }
 
             onStatusChanged: {
-                if (status === Image.Ready) {
+                if (status === AnimatedImage.Ready) {
                     updateSize();
                     window.imageLoaded = true;
-                } else if (status === Image.Error) {
+                } else if (status === AnimatedImage.Error) {
                     ToastService.showError("Failed to load image: " + window.imageSource);
                     window.closing();
                     window.destroy();

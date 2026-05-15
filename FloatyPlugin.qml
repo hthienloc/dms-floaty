@@ -127,7 +127,7 @@ PluginComponent {
         id: fileBrowserModal
         browserTitle: "Select Image or PDF"
         browserIcon: "image"
-        fileExtensions: ["*.png", "*.jpg", "*.jpeg", "*.webp", "*.bmp", "*.svg", "*.pdf"]
+        fileExtensions: ["*.png", "*.jpg", "*.jpeg", "*.webp", "*.gif", "*.bmp", "*.svg", "*.pdf"]
         onFileSelected: path => {
             root.spawnWindow("file://" + path);
             close();

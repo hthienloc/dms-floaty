@@ -158,9 +158,9 @@ PluginSettings {
             }
 
             ToggleSetting {
-                settingKey: "showUserGuide"
-                label: "Show User Guide"
-                description: "Display usage instructions in the popout."
+                settingKey: "showHints"
+                label: "Show Hints"
+                description: "Display helpful usage tips and shortcuts at the bottom of the popout."
                 defaultValue: true
             }
 

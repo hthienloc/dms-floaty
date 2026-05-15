@@ -8,6 +8,7 @@ import qs.Widgets
 import qs.Modules.Plugins
 import qs.Modals.Common
 import qs.Modals.FileBrowser
+import "./components"
 
 PluginComponent {
     id: root
@@ -16,7 +17,7 @@ PluginComponent {
     property var openWindows: []
 
     readonly property bool showBarPill: root.pluginData.showBarPill ?? true
-    readonly property bool showUserGuide: root.pluginData.showUserGuide ?? true
+    readonly property bool showHints: root.pluginData.showHints ?? true
 
     // Bar Pill - Standardized with QR Generator Style
     horizontalBarPill: showBarPill ? horizontalPillComp : null
@@ -306,68 +307,16 @@ PluginComponent {
                         }
                     }
 
-                    StyledRect {
-                        width: parent.width
-                        height: guideCol.implicitHeight + Theme.spacingL
-                        radius: Theme.cornerRadius
-                        color: Theme.surfaceContainerHighest
-                        visible: root.showUserGuide
-
-                        Column {
-                            id: guideCol
-                            anchors.centerIn: parent
-                            width: parent.width - Theme.spacingM * 2
-                            spacing: Theme.spacingS
-
-                            StyledText {
-                                text: "User Guide"
-                                font.pixelSize: Theme.fontSizeMedium
-                                font.bold: true
-                                color: Theme.primary
-                                anchors.horizontalCenter: parent.horizontalCenter
-                            }
-
-                            Column {
-                                width: parent.width
-                                spacing: 8
-
-                                Row {
-                                    spacing: Theme.spacingS
-                                    DankIcon { name: "open_with"; size: 14; color: Theme.surfaceVariantText }
-                                    StyledText { text: "Left Click + Drag: Move window"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                                }
-                                Row {
-                                    spacing: Theme.spacingS
-                                    DankIcon { name: "aspect_ratio"; size: 14; color: Theme.surfaceVariantText }
-                                    StyledText { text: "Scroll Wheel: Resize image"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                                }
-                                Row {
-                                    spacing: Theme.spacingS
-                                    DankIcon { name: "minimize"; size: 14; color: Theme.surfaceVariantText }
-                                    StyledText { text: "Right Click: Toggle minimize"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                                }
-                                Row {
-                                    spacing: Theme.spacingS
-                                    DankIcon { name: "close"; size: 14; color: Theme.surfaceVariantText }
-                                    StyledText { text: "Middle Click: Close window"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                                }
-                                Row {
-                                    spacing: Theme.spacingS
-                                    DankIcon { name: "add_photo_alternate"; size: 14; color: Theme.surfaceVariantText }
-                                    StyledText { text: "Drop image/link: Quick float"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                                }
-                                Row {
-                                    spacing: Theme.spacingS
-                                    DankIcon { name: "bolt"; size: 14; color: Theme.surfaceVariantText }
-                                    StyledText { text: "Right Click Icon: Fast paste image/link"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                                }
-                                Row {
-                                    spacing: Theme.spacingS
-                                    DankIcon { name: "picture_as_pdf"; size: 14; color: Theme.surfaceVariantText }
-                                    StyledText { text: "PDF: Enter pages like 1, 1-3, or 1 3 5"; color: Theme.surfaceVariantText; font.pixelSize: Theme.fontSizeSmall }
-                                }
-                            }
-                        }
+                    HintSection {
+                        showHints: root.showHints
+                        
+                        HintItem { icon: "open_with"; text: "Left Click + Drag: Move window" }
+                        HintItem { icon: "aspect_ratio"; text: "Scroll Wheel: Resize image" }
+                        HintItem { icon: "minimize"; text: "Right Click: Toggle minimize" }
+                        HintItem { icon: "close"; text: "Middle Click: Close window" }
+                        HintItem { icon: "add_photo_alternate"; text: "Drop image/link: Quick float" }
+                        HintItem { icon: "bolt"; text: "Right Click Icon: Fast paste image/link" }
+                        HintItem { icon: "picture_as_pdf"; text: "PDF: Enter pages like 1, 1-3, or 1 3 5" }
                     }
                 }
             }

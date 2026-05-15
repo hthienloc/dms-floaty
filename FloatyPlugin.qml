@@ -185,20 +185,19 @@ PluginComponent {
             detailsText: "Reference images on top"
             showCloseButton: true
 
-            onOpened: {
-                Qt.callLater(() => {
-                    urlInput.forceActiveFocus();
-                });
-            }
+            property var parentPopout: null
 
             PluginShortcut {
                 id: shortcuts
+                parentPopout: popout.parentPopout
+                onOpened: {
+                    Qt.callLater(() => {
+                        urlInput.forceActiveFocus();
+                    });
+                }
                 onEnterPressed: {
                     if (urlInput.text !== "") {
                         root.spawnWindow(urlInput.text);
-                        root.closePopout();
-                    } else {
-                        root.floatFromClipboard();
                         root.closePopout();
                     }
                 }

@@ -475,7 +475,7 @@ PanelWindow {
             State {
                 name: "minimized"
                 when: window.isMinimized
-                PropertyChanges { target: window; width: minimizedSize; height: minimizedSize }
+                PropertyChanges { target: window; implicitWidth: minimizedSize; implicitHeight: minimizedSize }
                 PropertyChanges { target: container; radius: minimizedSize / 2; color: Theme.primary; border.width: 0; opacity: 0.5 }
                 PropertyChanges { target: img; opacity: 0 }
                 PropertyChanges { target: cloudIcon; opacity: 1 }
@@ -507,7 +507,11 @@ PanelWindow {
                         }
                     }
                     PropertyAction { 
-                        targets: [window, container, img, cloudIcon]
+                        target: window
+                        properties: "implicitWidth,implicitHeight"
+                    }
+                    PropertyAction { 
+                        targets: [container, img, cloudIcon]
                         properties: "width,height,radius,color,border.width,opacity"
                     }
                     NumberAnimation {
@@ -543,7 +547,11 @@ PanelWindow {
                         }
                     }
                     PropertyAction { 
-                        targets: [window, container, img, cloudIcon]
+                        target: window
+                        properties: "implicitWidth,implicitHeight"
+                    }
+                    PropertyAction { 
+                        targets: [container, img, cloudIcon]
                         properties: "width,height,radius,color,border.width,opacity"
                     }
                     NumberAnimation {

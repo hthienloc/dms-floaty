@@ -275,8 +275,8 @@ PluginComponent {
                             text: "Close All"
                             width: (parent.width - Theme.spacingS) / 2
                             iconName: "delete_sweep"
-                            backgroundColor: Theme.errorContainer
-                            textColor: Theme.onErrorContainer
+                            backgroundColor: Theme.error
+                            textColor: Theme.surfaceText
                             onClicked: {
                                 root.closeAllWindows();
                                 root.closePopout();

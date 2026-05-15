@@ -119,13 +119,6 @@ PluginSettings {
             defaultValue: true
         }
 
-        ToggleSetting {
-            settingKey: "showHints"
-            label: "Show Hints"
-            description: "Display helpful usage tips and shortcuts at the bottom of the popout."
-            defaultValue: true
-        }
-
         SliderSetting {
             settingKey: "minImageSize"
             label: "Minimum Image Size"
@@ -184,6 +177,17 @@ PluginSettings {
         CopyBox {
             label: "Example for Niri (config.kdl)"
             text: "bindings {\n    Print { spawn \"sh\" \"-c\" \"dms screenshot region --no-file --no-notify && dms ipc call floaty floatFromClipboard\"; }\n}"
+        }
+    }
+
+    SettingsCard {
+        SectionTitle { text: "Interface" }
+
+        ToggleSetting {
+            settingKey: "showHints"
+            label: "Show Hints"
+            description: "Display helpful usage tips and shortcuts at the bottom of the popout."
+            defaultValue: true
         }
     }
 }

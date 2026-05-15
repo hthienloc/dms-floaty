@@ -77,4 +77,4 @@ bindings {
 
 ## License
 
-MIT(https://github.com/hthienloc/dms-common) to be installed in the plugins directory.
+MIT

@@ -337,7 +337,6 @@ PluginComponent {
                         HintItem { icon: "bolt"; text: "Right Click Icon: Fast paste image/link" }
                         HintItem { icon: "picture_as_pdf"; text: "PDF: Enter pages like 1, 1-3, or 1 3 5" }
                         HintItem { icon: "keyboard_return"; text: "Enter: Float from input or clipboard" }
-                        HintItem { icon: "keyboard_capslock"; text: "Esc: Close popout" }
                     }
                 }
             }

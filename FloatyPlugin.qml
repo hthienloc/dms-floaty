@@ -263,8 +263,8 @@ PluginComponent {
                             text: "Toggle All"
                             width: (parent.width - Theme.spacingS) / 2
                             iconName: "unfold_more"
-                            backgroundColor: Theme.secondaryContainer
-                            textColor: Theme.secondary
+                            backgroundColor: Theme.surfaceContainerHighest
+                            textColor: Theme.surfaceText
                             onClicked: {
                                 root.toggleMinimizeAll();
                                 root.closePopout();
@@ -276,7 +276,7 @@ PluginComponent {
                             width: (parent.width - Theme.spacingS) / 2
                             iconName: "delete_sweep"
                             backgroundColor: Theme.errorContainer
-                            textColor: Theme.error
+                            textColor: Theme.onErrorContainer
                             onClicked: {
                                 root.closeAllWindows();
                                 root.closePopout();

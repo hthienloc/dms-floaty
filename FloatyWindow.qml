@@ -88,6 +88,7 @@ PanelWindow {
 
     Connections {
         target: (typeof SettingsData !== "undefined") ? SettingsData : null
+        ignoreUnknownSignals: true
         function onBarConfigsChanged() { updatePosition(); }
         function onDockEnabledChanged() { updatePosition(); }
         function onDockPositionChanged() { updatePosition(); }

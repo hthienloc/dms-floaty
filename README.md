@@ -80,6 +80,8 @@ bindings {
 GPL-3.0
 
 ## Roadmap / TODO
-- [ ] **Session Persistence**: Automatically save and restore open floating windows and their positions across restarts.
-- [ ] **Annotation Tools**: Add basic drawing, highlighting, and text tools to annotate reference images directly.
-- [ ] **Opacity Control**: Implement adjustable window transparency for better background visibility.
+- [ ] **Session Restoration:** Automatically reload floating images and their positions after a restart or crash.
+- [ ] **Live Annotations:** Integrated pen and highlighter tools to mark up reference images without external editors.
+- [ ] **Per-Window Opacity:** Individual transparency sliders for each window to prevent obscuring critical background details.
+- [ ] **Quick OCR:** One-click text extraction from floating images directly into the clipboard.
+- [ ] **Built-in Cropping:** Ability to trim or focus on specific parts of a floated image within the UI.

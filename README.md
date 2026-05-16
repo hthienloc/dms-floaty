@@ -14,7 +14,7 @@ Pin reference images, screenshots, and PDFs on top of your workspace.
 git clone https://github.com/hthienloc/dms-common ~/.config/DankMaterialShell/plugins/dms-common
 
 # 2. Install this plugin
-dms://plugin/install/floaty
+dms plugins install floaty
 ```
 
 Or manually:

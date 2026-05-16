@@ -78,3 +78,8 @@ bindings {
 ## License
 
 GPL-3.0
+
+## Roadmap / TODO
+- [ ] **Session Persistence**: Automatically save and restore open floating windows and their positions across restarts.
+- [ ] **Annotation Tools**: Add basic drawing, highlighting, and text tools to annotate reference images directly.
+- [ ] **Opacity Control**: Implement adjustable window transparency for better background visibility.

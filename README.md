@@ -42,33 +42,32 @@ git clone https://github.com/hthienloc/dms-floaty ~/.config/DankMaterialShell/pl
 
 ## IPC Commands
 
-```bash
-# Float from clipboard
-dms ipc call floaty floatFromClipboard
+Use `dms ipc call floaty <command>` to control Floaty from scripts or keybindings.
 
-# Open file selector
-dms ipc call floaty selectFileAndFloat
+| Command | Description |
+|---------|-------------|
+| `floatFromClipboard` | Float image/URL from clipboard |
+| `selectFileAndFloat` | Open file picker and float selection |
+| `floatFromUrl "url"` | Float from a URL or file path |
+| `toggleMinimizeAll` | Toggle minimize/expand all windows |
+| `minimizeAll` | Minimize all floating windows |
+| `expandAll` | Expand all floating windows |
+| `closeAllWindows` | Close all floating windows |
 
-# Close all windows
-dms ipc call floaty closeAllWindows
+### Keybinding examples
 
-# Toggle minimize/expand all
-dms ipc call floaty toggleMinimizeAll
-dms ipc call floaty minimizeAll
-dms ipc call floaty expandAll
-
-# Float from URL or path
-dms ipc call floaty floatFromUrl "file:///path/to/image.png"
-```
-
-### Example: Screenshot to Floaty
-
-Bind to your window manager (e.g., Niri):
-
+**Niri:**
 ```kdl
 bindings {
     Print { spawn "sh" "-c" "dms screenshot region --no-file --no-notify && dms ipc call floaty floatFromClipboard"; }
+    Mod+V { spawn "dms" "ipc" "call" "floaty" "floatFromClipboard"; }
 }
+```
+
+**Hyprland:**
+```ini
+bind = , Print, exec, dms screenshot region --no-file --no-notify && dms ipc call floaty floatFromClipboard
+bind = SUPER, V, exec, dms ipc call floaty floatFromClipboard
 ```
 
 ## Requirements

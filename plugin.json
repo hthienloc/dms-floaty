@@ -5,9 +5,10 @@
   "version": "1.2.1",
   "author": "Loc Huynh",
   "icon": "cloud",
-  "type": "widget",
+  "type": "daemon",
   "capabilities": [
-    "dankbar-widget"
+    "dankbar-widget",
+    "ipc"
   ],
   "component": "./FloatyPlugin.qml",
   "settings": "./FloatySettings.qml",

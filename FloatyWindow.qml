@@ -512,12 +512,17 @@ PanelWindow {
                         properties: "implicitWidth,implicitHeight"
                     }
                     PropertyAction { 
-                        targets: [container, img, cloudIcon]
-                        properties: "width,height,radius,color,border.width,opacity"
+                        target: container
+                        properties: "width,height,radius,color,border.width"
+                    }
+                    PropertyAction { 
+                        targets: [img, cloudIcon]
+                        properties: "opacity"
                     }
                     NumberAnimation {
                         target: container
                         property: "opacity"
+                        from: 0
                         to: 0.5
                         duration: 80
                         easing.type: Easing.InQuad
@@ -552,12 +557,17 @@ PanelWindow {
                         properties: "implicitWidth,implicitHeight"
                     }
                     PropertyAction { 
-                        targets: [container, img, cloudIcon]
-                        properties: "width,height,radius,color,border.width,opacity"
+                        target: container
+                        properties: "width,height,radius,color,border.width"
+                    }
+                    PropertyAction { 
+                        targets: [img, cloudIcon]
+                        properties: "opacity"
                     }
                     NumberAnimation {
                         target: container
                         property: "opacity"
+                        from: 0
                         to: 1
                         duration: 80
                         easing.type: Easing.InQuad

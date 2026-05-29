@@ -8,7 +8,7 @@ import qs.Widgets
 import qs.Modules.Plugins
 import qs.Modals.Common
 import qs.Modals.FileBrowser
-import "../dms-common"
+import dms.common 1.0
 
 PluginComponent {
     id: root
@@ -230,7 +230,7 @@ PluginComponent {
                         spacing: Theme.spacingS
                         
                         DankButton {
-                            text: "Clipboard"
+                            text: I18n.tr("Clipboard")
                             width: (parent.width - Theme.spacingS) / 2
                             iconName: "content_paste"
                             backgroundColor: Theme.primaryContainer
@@ -242,7 +242,7 @@ PluginComponent {
                         }
                         
                         DankButton {
-                            text: "Select File"
+                            text: I18n.tr("Select File")
                             width: (parent.width - Theme.spacingS) / 2
                             iconName: "folder_open"
                             backgroundColor: Theme.surfaceContainerHighest
@@ -260,7 +260,7 @@ PluginComponent {
                         visible: root.activeWindowCount > 0
 
                         DankButton {
-                            text: "Toggle All"
+                            text: I18n.tr("Toggle All")
                             width: (parent.width - Theme.spacingS) / 2
                             iconName: "unfold_more"
                             backgroundColor: Theme.surfaceContainerHighest
@@ -272,7 +272,7 @@ PluginComponent {
                         }
 
                         DankButton {
-                            text: "Close All"
+                            text: I18n.tr("Close All")
                             width: (parent.width - Theme.spacingS) / 2
                             iconName: "delete_sweep"
                             backgroundColor: Theme.error
@@ -289,7 +289,7 @@ PluginComponent {
                         spacing: Theme.spacingS
                         
                         StyledText {
-                            text: "Float from Link or Path"
+                            text: I18n.tr("Float from Link or Path")
                             font.pixelSize: Theme.fontSizeSmall
                             font.bold: true
                             color: Theme.surfaceVariantText
@@ -329,13 +329,13 @@ PluginComponent {
                     HintSection {
                         showHints: root.showHints
                         
-                        HintItem { icon: "open_with"; text: "Left Click + Drag: Move window" }
-                        HintItem { icon: "aspect_ratio"; text: "Scroll Wheel: Resize image" }
-                        HintItem { icon: "minimize"; text: "Right Click: Toggle minimize" }
-                        HintItem { icon: "close"; text: "Middle Click: Close window" }
-                        HintItem { icon: "add_photo_alternate"; text: "Drop image/link: Quick float" }
-                        HintItem { icon: "bolt"; text: "Right Click Icon: Fast paste image/link" }
-                        HintItem { icon: "picture_as_pdf"; text: "PDF: Enter pages like 1, 1-3, or 1 3 5" }
+                        HintItem { icon: "open_with"; text: I18n.tr("Left Click + Drag: Move window") }
+                        HintItem { icon: "aspect_ratio"; text: I18n.tr("Scroll Wheel: Resize image") }
+                        HintItem { icon: "minimize"; text: I18n.tr("Right Click: Toggle minimize") }
+                        HintItem { icon: "close"; text: I18n.tr("Middle Click: Close window") }
+                        HintItem { icon: "add_photo_alternate"; text: I18n.tr("Drop image/link: Quick float") }
+                        HintItem { icon: "bolt"; text: I18n.tr("Right Click Icon: Fast paste image/link") }
+                        HintItem { icon: "picture_as_pdf"; text: I18n.tr("PDF: Enter pages like 1, 1-3, or 1 3 5") }
                     }
                 }
             }

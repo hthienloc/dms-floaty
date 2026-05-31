@@ -9,48 +9,73 @@ PluginSettings {
     id: root
     pluginId: "floaty"
 
-    // Appearance Card
     SettingsCard {
-        SectionTitle { text: I18n.tr("Appearance"); icon: "palette" }
+        id: appearanceSection
+        SectionTitle { 
+            text: I18n.tr("Appearance")
+            icon: "palette" 
+            showReset: initialScale.isDirty || maxHeight.isDirty || borderWidth.isDirty || borderColor.isDirty || spawnPosition.isDirty || edgeSpacing.isDirty
+            onResetClicked: {
+                initialScale.resetToDefault();
+                maxHeight.resetToDefault();
+                borderWidth.resetToDefault();
+                borderColor.resetToDefault();
+                spawnPosition.resetToDefault();
+                edgeSpacing.resetToDefault();
+            }
+        }
 
         InfoText {
             text: I18n.tr("Changes apply to newly created windows only.")
         }
 
-        SliderSetting {
+        SliderSettingPlus {
+            id: initialScale
             settingKey: "initialScale"
             label: I18n.tr("Initial Width")
-            description: I18n.tr("The width (px) of the image when first opened.")
+            defaultValue: 400
             minimum: 100
             maximum: 800
             unit: "px"
-            defaultValue: 400
+            leftLabel: "100"
+            rightLabel: "800"
         }
 
-        SliderSetting {
+        Separator {}
+
+        SliderSettingPlus {
+            id: maxHeight
             settingKey: "maxHeight"
             label: I18n.tr("Max Height")
             description: I18n.tr("Limit image height (px). 0 = no limit.")
+            defaultValue: 0
             minimum: 0
             maximum: 1000
             unit: "px"
-            defaultValue: 0
+            leftLabel: "0"
+            rightLabel: "1000"
         }
 
-        SliderSetting {
+        Separator {}
+
+        SliderSettingPlus {
+            id: borderWidth
             settingKey: "borderWidth"
             label: I18n.tr("Border Width")
-            description: I18n.tr("Thickness of the window border.")
+            defaultValue: 2
             minimum: 0
             maximum: 4
             unit: "px"
-            defaultValue: 2
+            leftLabel: "0"
+            rightLabel: "4"
         }
 
-        SelectionSetting {
+        Separator {}
+
+        SelectionSettingPlus {
+            id: borderColor
             settingKey: "borderColor"
             label: I18n.tr("Border Color")
-            description: I18n.tr("Color of the window border.")
             options: [
                 { label: I18n.tr("Default"), value: "outlineVariant" },
                 { label: I18n.tr("Primary"), value: "primary" },
@@ -60,10 +85,12 @@ PluginSettings {
             defaultValue: "outlineVariant"
         }
 
-        SelectionSetting {
+        Separator {}
+
+        SelectionSettingPlus {
+            id: spawnPosition
             settingKey: "spawnPosition"
             label: I18n.tr("Spawn Position")
-            description: I18n.tr("Where new images appear on screen.")
             options: [
                 { label: I18n.tr("Top Left"), value: "top-left" },
                 { label: I18n.tr("Top"), value: "top" },
@@ -78,77 +105,123 @@ PluginSettings {
             defaultValue: "bottom-left"
         }
 
-        SliderSetting {
+        Separator {}
+
+        SliderSettingPlus {
+            id: edgeSpacing
             settingKey: "edgeSpacing"
             label: I18n.tr("Edge Spacing")
-            description: I18n.tr("Distance from screen edges, bars, and other windows.")
+            defaultValue: Appearance.spacing.normal
             minimum: 0
             maximum: 64
             unit: "px"
-            defaultValue: Appearance.spacing.normal
+            leftLabel: "0"
+            rightLabel: "64"
         }
     }
 
-    // Behavior Card
     SettingsCard {
-        SectionTitle { text: I18n.tr("Behavior"); icon: "settings" }
+        id: behaviorSection
+        SectionTitle { 
+            text: I18n.tr("Behavior")
+            icon: "settings" 
+            showReset: autoMinimize.isDirty || showBarPill.isDirty || autoTiling.isDirty || minImageSize.isDirty || minimizeDelay.isDirty
+            onResetClicked: {
+                autoMinimize.resetToDefault();
+                showBarPill.resetToDefault();
+                autoTiling.resetToDefault();
+                minImageSize.resetToDefault();
+                minimizeDelay.resetToDefault();
+            }
+        }
 
-        ToggleSetting {
-            id: autoMinimizeToggle
+        ToggleSettingPlus {
+            id: autoMinimize
             settingKey: "autoMinimize"
             label: I18n.tr("Auto-Minimize")
             description: I18n.tr("Shrink to an icon when idle.")
             defaultValue: false
         }
 
-        ToggleSetting {
+        Separator {}
+
+        ToggleSettingPlus {
+            id: showBarPill
             settingKey: "showBarPill"
             label: I18n.tr("Show Bar Pill")
-            description: I18n.tr("Display the icon on the status bar.")
             defaultValue: true
         }
 
-        ToggleSetting {
+        Separator {}
+
+        ToggleSettingPlus {
+            id: autoTiling
             settingKey: "autoTiling"
             label: I18n.tr("Auto-Tiling Windows")
-            description: I18n.tr("Place new windows in empty spots instead of stacking.")
             defaultValue: true
         }
 
-        SliderSetting {
+        Separator {}
+
+        SliderSettingPlus {
+            id: minImageSize
             settingKey: "minImageSize"
             label: I18n.tr("Minimum Image Size")
-            description: I18n.tr("Ignore images smaller than this dimension (px) to prevent corrupted spawns.")
             minimum: 0
             maximum: 100
             unit: "px"
             defaultValue: 16
+            leftLabel: "0"
+            rightLabel: "100"
         }
 
-        SliderSetting {
+        Separator {}
+
+        SliderSettingPlus {
+            id: minimizeDelay
             settingKey: "minimizeDelay"
             label: I18n.tr("Minimize Delay")
-            description: I18n.tr("Wait time before shrinking (ms).")
-            minimum: 1000
-            maximum: 10000
-            unit: "ms"
-            defaultValue: 3000
-            enabled: autoMinimizeToggle.checked
+            minimum: 1
+            maximum: 10
+            unit: "s"
+            defaultValue: 3
+            leftLabel: "1s"
+            rightLabel: "10s"
+            enabled: autoMinimize.value
         }
     }
 
-    // Shortcut Guide Card
     SettingsCard {
-        SectionTitle { text: I18n.tr("Shortcut Setup Guide"); icon: "keyboard" }
-
-        InfoText {
-            text: I18n.tr("Use these commands in your Window Manager (Niri, Hyprland, etc.) or custom scripts to trigger Floaty actions:")
+        id: behaviorOptionsSection
+        SectionTitle { 
+            text: I18n.tr("Interface")
+            icon: "display_settings" 
+            showReset: showHints.isDirty
+            onResetClicked: showHints.resetToDefault()
         }
 
-        // Command list
+        ToggleSettingPlus {
+            id: showHints
+            settingKey: "showHints"
+            label: I18n.tr("Show Hints")
+            defaultValue: true
+        }
+    }
+
+    SettingsCard {
+        SectionTitle {
+            id: ipcTitle
+            text: I18n.tr("IPC Commands")
+            icon: "terminal"
+            collapsible: true
+            isExpanded: false
+            settingKey: "ipcCommandsExpanded"
+        }
+
         Column {
             width: parent.width
-            spacing: Theme.spacingS
+            spacing: Theme.spacingM
+            visible: ipcTitle.isExpanded
 
             Repeater {
                 model: [
@@ -168,22 +241,34 @@ PluginSettings {
                     text: modelData.text
                 }
             }
-        }
 
-        CopyBox {
-            label: I18n.tr("Example for Niri (config.kdl)")
-            text: "bindings {\n    Print { spawn \"sh\" \"-c\" \"dms screenshot region --no-file --no-notify && dms ipc call floaty floatFromClipboard\"; }\n}"
+            Separator { opacity: 0.1 }
+
+            CopyBox {
+                label: I18n.tr("Example for Niri (config.kdl)")
+                text: "bindings {\n    Print { spawn \"sh\" \"-c\" \"dms screenshot region --no-file --no-notify && dms ipc call floaty floatFromClipboard\"; }\n}"
+            }
         }
     }
 
     SettingsCard {
-        SectionTitle { text: I18n.tr("Interface"); icon: "display_settings" }
+        SectionTitle { 
+            id: usageTitle
+            text: I18n.tr("Usage Guide")
+            icon: "menu_book" 
+            collapsible: true
+            settingKey: "usageGuideExpanded"
+        }
 
-        ToggleSetting {
-            settingKey: "showHints"
-            label: I18n.tr("Show Hints")
-            description: I18n.tr("Display helpful usage tips and shortcuts at the bottom of the popout.")
-            defaultValue: true
+        UsageGuide {
+            expanded: usageTitle.isExpanded
+            items: [
+                I18n.tr("<b>Drop an image</b> onto the bar icon to float it instantly."),
+                I18n.tr("<b>Left-click</b> a floating image to bring it to front."),
+                I18n.tr("<b>Right-click</b> a floating image to <b>collapse</b> it into an icon."),
+                I18n.tr("<b>Middle-click</b> a floating image to <b>close</b> it instantly."),
+                I18n.tr("Use <b>IPC commands</b> above to integrate with your screenshot flow.")
+            ]
         }
     }
 

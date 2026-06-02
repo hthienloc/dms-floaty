@@ -15,6 +15,7 @@ PluginComponent {
 
     property int activeWindowCount: 0
     property var openWindows: []
+    property var floatyWindowComponent: null
 
     readonly property bool showBarPill: root.pluginData.showBarPill ?? true
     readonly property bool showHints: root.pluginData.showHints ?? true
@@ -567,8 +568,10 @@ PluginComponent {
     }
 
     function _spawnWindow(source) {
-        const url = Qt.resolvedUrl("FloatyWindow.qml");
-        const component = Qt.createComponent(url);
+        if (!root.floatyWindowComponent) {
+            root.floatyWindowComponent = Qt.createComponent(Qt.resolvedUrl("FloatyWindow.qml"));
+        }
+        const component = root.floatyWindowComponent;
 
         const initialWidth = root.pluginService.loadPluginData("floaty", "initialScale", 400);
         const spawnPosition = root.pluginService.loadPluginData("floaty", "spawnPosition", "center");

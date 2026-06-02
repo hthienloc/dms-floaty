@@ -436,6 +436,16 @@ PanelWindow {
                 }
             }
 
+            onClicked: function(mouse) {
+                if (mouse.button === Qt.LeftButton) {
+                    Proc.runCommand("open-edit", ["dms", "ipc", "call", "quickCapture", "openImage", window.imageSource], function(stdout, exitCode) {
+                        if (exitCode === 0) {
+                            window.close();
+                        }
+                    });
+                }
+            }
+
             onWheel: (wheel) => {
                 if (window.isMinimized || img.implicitWidth <= 0 || img.implicitHeight <= 0) return;
 

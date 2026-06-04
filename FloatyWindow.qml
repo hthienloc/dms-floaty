@@ -24,6 +24,7 @@ PanelWindow {
     readonly property int minimizeDelay: pluginData.minimizeDelay ?? 3000
     readonly property int borderWidth: pluginData.borderWidth ?? 2
     readonly property string borderColor: pluginData.borderColor ?? "outlineVariant"
+    readonly property bool transparentBg: pluginData.transparentBg ?? true
     property string spawnPosition: "center"
     property int maxHeight: 0
     property var plugin: null
@@ -321,7 +322,7 @@ PanelWindow {
         id: container
         anchors.fill: parent
         radius: Theme.cornerRadius
-        color: Theme.surfaceContainer
+        color: window.transparentBg ? "transparent" : Theme.surfaceContainer
         border.color: window.borderColor === "primary" ? Theme.primary : 
                       window.borderColor === "surfaceContainerHighest" ? Theme.surfaceContainerHighest :
                       window.borderColor === "transparent" ? "transparent" : Theme.outlineVariant

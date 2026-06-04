@@ -14,7 +14,7 @@ PluginSettings {
         SectionTitle { 
             text: I18n.tr("Appearance")
             icon: "palette" 
-            showReset: initialScale.isDirty || maxHeight.isDirty || borderWidth.isDirty || borderColor.isDirty || spawnPosition.isDirty || edgeSpacing.isDirty
+            showReset: initialScale.isDirty || maxHeight.isDirty || borderWidth.isDirty || borderColor.isDirty || spawnPosition.isDirty || edgeSpacing.isDirty || transparentBg.isDirty
             onResetClicked: {
                 initialScale.resetToDefault();
                 maxHeight.resetToDefault();
@@ -22,6 +22,7 @@ PluginSettings {
                 borderColor.resetToDefault();
                 spawnPosition.resetToDefault();
                 edgeSpacing.resetToDefault();
+                transparentBg.resetToDefault();
             }
         }
 
@@ -117,6 +118,16 @@ PluginSettings {
             unit: "px"
             leftLabel: "0"
             rightLabel: "64"
+        }
+
+        Separator {}
+
+        ToggleSettingPlus {
+            id: transparentBg
+            settingKey: "transparentBg"
+            label: I18n.tr("Transparent Background")
+            description: I18n.tr("Show image transparent areas as transparent instead of window color.")
+            defaultValue: true
         }
     }
 

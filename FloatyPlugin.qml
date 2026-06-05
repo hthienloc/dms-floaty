@@ -69,6 +69,17 @@ PluginComponent {
                     }
                 }
             }
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.MiddleButton
+                cursorShape: Qt.PointingHandCursor
+                onClicked: (mouse) => {
+                    if (mouse.button === Qt.MiddleButton) {
+                        root.selectFileAndFloat();
+                    }
+                }
+            }
         }
     }
 
@@ -114,6 +125,17 @@ PluginComponent {
                         drop.urls.forEach(url => root.spawnWindow(url.toString()));
                     } else if (drop.hasText) {
                         root.spawnWindow(drop.text);
+                    }
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.MiddleButton
+                cursorShape: Qt.PointingHandCursor
+                onClicked: (mouse) => {
+                    if (mouse.button === Qt.MiddleButton) {
+                        root.selectFileAndFloat();
                     }
                 }
             }
@@ -335,6 +357,7 @@ PluginComponent {
                         HintItem { icon: "minimize"; text: I18n.tr("Right Click: Toggle minimize") }
                         HintItem { icon: "close"; text: I18n.tr("Middle Click: Close window") }
                         HintItem { icon: "add_photo_alternate"; text: I18n.tr("Drop image/link: Quick float") }
+                        HintItem { icon: "folder_open"; text: I18n.tr("Middle Click Icon: Select file to float") }
                         HintItem { icon: "bolt"; text: I18n.tr("Right Click Icon: Fast paste image/link") }
                         HintItem { icon: "picture_as_pdf"; text: I18n.tr("PDF: Enter pages like 1, 1-3, or 1 3 5") }
                     }

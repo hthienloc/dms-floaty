@@ -26,13 +26,23 @@ git clone https://github.com/hthienloc/dms-floaty ~/.config/DankMaterialShell/pl
 
 ## Usage
 
+### Bar Icon
+
 | Action | Result |
 |--------|--------|
-| Drag onto icon | Quick float |
-| Left click | Open menu |
-| Right click | Paste from clipboard |
-| Scroll | Resize image |
-| Middle click | Close |
+| Left click | Open popout menu |
+| Middle click | Open file browser to select file |
+| Right click | Paste and float from clipboard |
+| Drag & drop | Quick float dropped image, file or text |
+
+### Floating Windows
+
+| Action | Result |
+|--------|--------|
+| Left click + Drag | Move window |
+| Middle click | Close window |
+| Right click | Toggle minimize / expand |
+| Scroll | Resize window |
 
 ## IPC Commands
 

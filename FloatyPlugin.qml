@@ -19,6 +19,8 @@ PluginComponent {
     property int localWindowCount: 0
     property var openWindows: []
     property var floatyWindowComponent: null
+    pluginId: "floaty"
+    pluginService: PluginService
 
     readonly property bool showBarPill: root.pluginData.showBarPill ?? true
     readonly property bool showHints: root.pluginData.showHints ?? true
@@ -166,6 +168,7 @@ PluginComponent {
 
     IpcHandler {
         target: "floaty"
+        enabled: root.isDaemonInstance
 
         function floatFromClipboard(): string {
             root.floatFromClipboard();

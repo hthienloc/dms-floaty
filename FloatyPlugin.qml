@@ -13,7 +13,10 @@ import "./dms-common"
 PluginComponent {
     id: root
 
-    property int activeWindowCount: 0
+    readonly property bool isDaemonInstance: root.parent !== null
+    readonly property var daemonInstance: isDaemonInstance ? root : (PluginService.pluginInstances["floaty"] || null)
+    readonly property int activeWindowCount: daemonInstance ? daemonInstance.localWindowCount : 0
+    property int localWindowCount: 0
     property var openWindows: []
     property var floatyWindowComponent: null
 
@@ -63,9 +66,9 @@ PluginComponent {
                 onDropped: (drop) => {
                     draggingOver = false;
                     if (drop.hasUrls) {
-                        drop.urls.forEach(url => root.spawnWindow(url.toString()));
+                        drop.urls.forEach(url => daemonInstance.spawnWindow(url.toString()));
                     } else if (drop.hasText) {
-                        root.spawnWindow(drop.text);
+                        daemonInstance.spawnWindow(drop.text);
                     }
                 }
             }
@@ -76,7 +79,7 @@ PluginComponent {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: (mouse) => {
                     if (mouse.button === Qt.MiddleButton) {
-                        root.selectFileAndFloat();
+                        daemonInstance.selectFileAndFloat();
                     }
                 }
             }
@@ -122,9 +125,9 @@ PluginComponent {
                 onDropped: (drop) => {
                     draggingOver = false;
                     if (drop.hasUrls) {
-                        drop.urls.forEach(url => root.spawnWindow(url.toString()));
+                        drop.urls.forEach(url => daemonInstance.spawnWindow(url.toString()));
                     } else if (drop.hasText) {
-                        root.spawnWindow(drop.text);
+                        daemonInstance.spawnWindow(drop.text);
                     }
                 }
             }
@@ -135,7 +138,7 @@ PluginComponent {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: (mouse) => {
                     if (mouse.button === Qt.MiddleButton) {
-                        root.selectFileAndFloat();
+                        daemonInstance.selectFileAndFloat();
                     }
                 }
             }
@@ -143,7 +146,7 @@ PluginComponent {
     }
 
     pillRightClickAction: function() {
-        root.smartPaste();
+        daemonInstance.smartPaste();
     }
 
     FileBrowserModal {
@@ -220,7 +223,7 @@ PluginComponent {
                 }
                 onEnterPressed: {
                     if (urlInput.text !== "") {
-                        root.spawnWindow(urlInput.text);
+                        daemonInstance.spawnWindow(urlInput.text);
                         root.closePopout();
                     }
                 }
@@ -235,9 +238,9 @@ PluginComponent {
                     anchors.fill: parent
                     onDropped: (drop) => {
                         if (drop.hasUrls) {
-                            drop.urls.forEach(url => root.spawnWindow(url.toString()));
+                            drop.urls.forEach(url => daemonInstance.spawnWindow(url.toString()));
                         } else if (drop.hasText) {
-                            root.spawnWindow(drop.text);
+                            daemonInstance.spawnWindow(drop.text);
                         }
                         root.closePopout();
                     }
@@ -259,7 +262,7 @@ PluginComponent {
                             backgroundColor: Theme.primaryContainer
                             textColor: Theme.primary
                             onClicked: {
-                                root.floatFromClipboard();
+                                daemonInstance.floatFromClipboard();
                                 root.closePopout();
                             }
                         }
@@ -271,7 +274,7 @@ PluginComponent {
                             backgroundColor: Theme.surfaceContainerHighest
                             textColor: Theme.surfaceText
                             onClicked: {
-                                root.selectFileAndFloat();
+                                daemonInstance.selectFileAndFloat();
                                 root.closePopout();
                             }
                         }
@@ -289,7 +292,7 @@ PluginComponent {
                             backgroundColor: Theme.surfaceContainerHighest
                             textColor: Theme.surfaceText
                             onClicked: {
-                                root.toggleMinimizeAll();
+                                daemonInstance.toggleMinimizeAll();
                                 root.closePopout();
                             }
                         }
@@ -301,7 +304,7 @@ PluginComponent {
                             backgroundColor: Theme.error
                             textColor: Theme.surfaceText
                             onClicked: {
-                                root.closeAllWindows();
+                                daemonInstance.closeAllWindows();
                                 root.closePopout();
                             }
                         }
@@ -328,7 +331,7 @@ PluginComponent {
                                 placeholderText: "https://... or /path/..."
                                 onAccepted: {
                                     if (text !== "") {
-                                        root.spawnWindow(text);
+                                        daemonInstance.spawnWindow(text);
                                         root.closePopout();
                                     }
                                 }
@@ -341,7 +344,7 @@ PluginComponent {
                                 textColor: Theme.primary
                                 onClicked: {
                                     if (urlInput.text !== "") {
-                                        root.spawnWindow(urlInput.text);
+                                        daemonInstance.spawnWindow(urlInput.text);
                                         root.closePopout();
                                     }
                                 }
@@ -609,12 +612,12 @@ PluginComponent {
             });
 
             if (win !== null) {
-                root.activeWindowCount++;
+                root.localWindowCount++;
                 root.openWindows = [...root.openWindows, win];
                 root.raiseWindow(win);
 
                 win.closing.connect(function() {
-                    root.activeWindowCount--;
+                    root.localWindowCount--;
                     root.openWindows = root.openWindows.filter(w => w !== win);
 
                 });
@@ -631,6 +634,44 @@ PluginComponent {
             component.statusChanged.connect(function() {
                 if (component.status === Component.Ready) createWin();
             });
+        }
+    }
+
+    function registerDaemonAsWidget() {
+        if (!pluginService.pluginInstances[pluginId]) {
+            const newInstances = Object.assign({}, pluginService.pluginInstances);
+            newInstances[pluginId] = root;
+            pluginService.pluginInstances = newInstances;
+        }
+        if (pluginService.pluginWidgetComponents && !pluginService.pluginWidgetComponents[pluginId]) {
+            const newWidgets = Object.assign({}, pluginService.pluginWidgetComponents);
+            newWidgets[pluginId] = pluginService.pluginDaemonComponents[pluginId];
+            pluginService.pluginWidgetComponents = newWidgets;
+        }
+        const plugins = pluginService.getLoadedPlugins ? pluginService.getLoadedPlugins() : [];
+        const pluginInfo = plugins.find((p) => p.id === pluginId);
+        if (pluginInfo) {
+            pluginInfo.type = "widget";
+        }
+    }
+
+    function unregisterDaemonInstance() {
+        if (pluginService.pluginInstances[pluginId] === root) {
+            const newInstances = Object.assign({}, pluginService.pluginInstances);
+            delete newInstances[pluginId];
+            pluginService.pluginInstances = newInstances;
+        }
+    }
+
+    Component.onCompleted: {
+        if (root.isDaemonInstance && pluginService && pluginId) {
+            root.registerDaemonAsWidget();
+        }
+    }
+
+    Component.onDestruction: {
+        if (root.isDaemonInstance && pluginService && pluginId) {
+            root.unregisterDaemonInstance();
         }
     }
 }

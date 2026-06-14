@@ -12,8 +12,8 @@
     "ipc"
   ],
   "components": {
-    "daemon": "./FloatyPlugin.qml",
-    "widget": "./FloatyPlugin.qml"
+    "daemon": "./FloatyDaemon.qml",
+    "widget": "./FloatyWidget.qml"
   },
   "settings": "./FloatySettings.qml",
   "requires_dms": ">=1.5.0",

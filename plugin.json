@@ -5,13 +5,18 @@
   "version": "2.0.0",
   "author": "Loc Huynh",
   "icon": "cloud",
-  "type": "daemon",
+  "type": "composite",
   "capabilities": [
+    "daemon",
     "dankbar-widget",
     "ipc"
   ],
-  "component": "./FloatyPlugin.qml",
+  "components": {
+    "daemon": "./FloatyPlugin.qml",
+    "widget": "./FloatyPlugin.qml"
+  },
   "settings": "./FloatySettings.qml",
+  "requires_dms": ">=1.5.0",
   "permissions": [
     "settings_read",
     "settings_write",
